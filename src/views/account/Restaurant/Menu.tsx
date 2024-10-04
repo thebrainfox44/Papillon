@@ -36,6 +36,8 @@ import { balanceFromExternal } from "@/services/balance";
 import MissingItem from "@/components/Global/MissingItem";
 import { animPapillon } from "@/utils/ui/animations";
 import { FadeInDown, FadeOut } from "react-native-reanimated";
+import { reservationHistoryFromExternal } from "@/services/reservation-history";
+import { ReservationHistory } from "@/services/shared/ReservationHistory";
 
 const Menu: Screen<"Menu"> = ({
   route,
@@ -61,16 +63,21 @@ const Menu: Screen<"Menu"> = ({
   }, [navigation, route.params, theme.colors.text]);
 
   const [balances, setBalances] = useState<Balance[] | null>(null);
+  const [history, setHistory] = useState<ReservationHistory[] | null>(null);
 
   useEffect(() => {
     void async function () {
       const balances: Balance[] = [];
+      const histories: ReservationHistory[] = [];
       for (const account of linkedAccounts) {
         const balance = await balanceFromExternal(account);
+        const history = await reservationHistoryFromExternal(account);
         balances.push(...balance);
+        histories.push(...history);
       }
-      console.log(balances);
+
       setBalances(balances);
+      setHistory(histories);
     }();
   }, [linkedAccounts]);
 
@@ -124,8 +131,8 @@ const Menu: Screen<"Menu"> = ({
         <Item
           title="Historique"
           icon={<Clock2 color={colors.text} />}
-          onPress={() => navigation.navigate("RestaurantHistory")}
-          enable={balances?.length !== 0}
+          onPress={() => navigation.navigate("RestaurantHistory", { histories: history ?? [] })}
+          enable={history?.length !== 0}
         />
         <Item
           title="QR-Code"

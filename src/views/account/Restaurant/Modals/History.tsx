@@ -9,7 +9,7 @@ import { useEffect, useMemo, useState } from "react";
 import { ScrollView, StyleSheet } from "react-native";
 import { FadeInDown, FadeOut } from "react-native-reanimated";
 
-const RestaurantHistory = () => {
+const RestaurantHistory = ({ route }) => {
   const accounts = useAccounts((state) => state.accounts);
   const account = useCurrentAccount(store => store.account);
 
@@ -19,24 +19,13 @@ const RestaurantHistory = () => {
     }).filter(Boolean) as ExternalAccount[] ?? [];
   }, [account?.linkedExternalLocalIDs, accounts]);
 
-  const [history, setHistory] = useState<ReservationHistory[] | null>(null);
-  useEffect(() => {
-    void async function () {
-      const histories: ReservationHistory[] = [];
-      for (const account of linkedAccounts) {
-        const history = await reservationHistoryFromExternal(account);
-        histories.push(...history);
-      }
-      setHistory(histories);
-      console.log(histories);
-    }();
-  }, [linkedAccounts]);
+  const histories = route.params?.histories ?? [];
 
   return (
     <ScrollView contentContainerStyle={styles.scrollViewContent}>
-      {history === null ? (
+      {histories === null ? (
         <NativeText>Chargement...</NativeText>
-      ) : history.length === 0 ? (
+      ) : histories.length === 0 ? (
         <MissingItem
           emoji="🧾"
           title="Aucune réservation"
@@ -45,7 +34,7 @@ const RestaurantHistory = () => {
           exiting={animPapillon(FadeOut)}
         />
       ) : (
-        history.map((reservation, index) => (
+        histories.map((reservation, index) => (
           <NativeText key={index}>{reservation.amount}{reservation.currency} le {new Date(reservation.timestamp).toLocaleString("fr-FR")}</NativeText>
         ))
       )}
