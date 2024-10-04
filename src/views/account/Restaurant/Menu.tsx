@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   ScrollView,
   StyleSheet,
+  Dimensions,
 } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import * as WebBrowser from "expo-web-browser";
@@ -45,6 +46,13 @@ const Menu: Screen<"Menu"> = ({
 
   const account = useCurrentAccount(store => store.account);
   const linkedAccounts = useCurrentAccount(store => store.linkedAccounts);
+  const screenWidth = Dimensions.get("window").width;
+  const [activeIndex, setActiveIndex] = useState(0);
+  const handleScroll = (event: { nativeEvent: { contentOffset: { x: any; }; }; }) => {
+    const contentOffsetX = event.nativeEvent.contentOffset.x;
+    const index = Math.floor(contentOffsetX / (screenWidth - 200));
+    setActiveIndex(Math.max(0, Math.min(index, balances ? balances.length - 1 : 0)));
+  };
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -61,7 +69,7 @@ const Menu: Screen<"Menu"> = ({
         const balance = await balanceFromExternal(account);
         balances.push(...balance);
       }
-
+      console.log(balances);
       setBalances(balances);
     }();
   }, [linkedAccounts]);
@@ -77,14 +85,39 @@ const Menu: Screen<"Menu"> = ({
           exiting={animPapillon(FadeOut)}
         />
       ) : (
-        balances && balances.map((balance, index) => (
-          <RestaurantCard
-            key={index}
-            theme={theme}
-            solde={balance.amount}
-            repas={balance.remaining}
-          />
-        ))
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          snapToInterval={screenWidth}
+          onScroll={handleScroll}
+          decelerationRate="fast"
+          scrollEnabled={(balances ?? []).length > 1}
+          contentContainerStyle={{ alignItems: "center", gap: 16 }}
+        >
+          {balances?.map((item, index) => (
+            <View style={{ width: screenWidth - 32 }}>
+              <RestaurantCard
+                theme={theme}
+                solde={item.amount}
+                repas={item.remaining}
+              />
+            </View>
+          ))}
+        </ScrollView>
+      )}
+
+      {balances && balances.length > 1 && (
+        <View style={styles.dotsContainer}>
+          {balances.map((_, index) => (
+            <View
+              key={index}
+              style={[
+                styles.dot,
+                index === activeIndex ? { backgroundColor: colors.text } : { backgroundColor: colors.text + "25" },
+              ]}
+            />
+          ))}
+        </View>
       )}
 
       <HorizontalList style={styles.horizontalList}>
@@ -172,6 +205,7 @@ const styles = StyleSheet.create({
   },
   scrollViewContent: {
     padding: 16,
+    gap: 16,
   },
   horizontalList: {
     marginTop: 10,
@@ -202,6 +236,17 @@ const styles = StyleSheet.create({
     fontFamily: "semibold",
     fontSize: 17,
   },
+  dotsContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  dot: {
+    width: 7,
+    height: 7,
+    borderRadius: 5,
+    marginHorizontal: 4,
+  }
 });
 
 export default Menu;

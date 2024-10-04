@@ -1,5 +1,6 @@
 import MissingItem from "@/components/Global/MissingItem";
 import { NativeText } from "@/components/Global/NativeComponents";
+import { reservationHistoryFromExternal } from "@/services/reservation-history";
 import { ReservationHistory } from "@/services/shared/ReservationHistory";
 import { useAccounts, useCurrentAccount } from "@/stores/account";
 import type { ExternalAccount } from "@/stores/account/types";
@@ -21,14 +22,15 @@ const RestaurantHistory = () => {
   const [history, setHistory] = useState<ReservationHistory[] | null>(null);
   useEffect(() => {
     void async function () {
-      const account = linkedAccounts[0];
-      if (account) {
-        const { reservationHistoryFromExternal } = await import("@/services/reservation-history");
+      const histories: ReservationHistory[] = [];
+      for (const account of linkedAccounts) {
         const history = await reservationHistoryFromExternal(account);
-        setHistory(history);
+        histories.push(...history);
       }
+      setHistory(histories);
+      console.log(histories);
     }();
-  });
+  }, [linkedAccounts]);
 
   return (
     <ScrollView contentContainerStyle={styles.scrollViewContent}>
