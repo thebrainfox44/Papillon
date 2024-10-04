@@ -32,6 +32,9 @@ import { AccountService } from "@/stores/account/types";
 import TabAnimatedTitle from "@/components/Global/TabAnimatedTitle";
 import { Balance } from "@/services/shared/Balance";
 import { balanceFromExternal } from "@/services/balance";
+import MissingItem from "@/components/Global/MissingItem";
+import { animPapillon } from "@/utils/ui/animations";
+import { FadeInDown, FadeOut } from "react-native-reanimated";
 
 const Menu: Screen<"Menu"> = ({
   route,
@@ -65,28 +68,39 @@ const Menu: Screen<"Menu"> = ({
 
   return (
     <ScrollView contentContainerStyle={styles.scrollViewContent}>
-      {balances ? balances.map((balance, index) => (
-        <RestaurantCard
-          key={index}
-          theme={theme}
-          solde={balance.amount}
-          repas={balance.remaining}
+      {balances?.length === 0 ? (
+        <MissingItem
+          emoji="🤔"
+          title="Vous n'avez lié aucun compte"
+          description="Pour accéder à la cantine, vous devez lier un compte dans l'onglet services externes."
+          entering={animPapillon(FadeInDown)}
+          exiting={animPapillon(FadeOut)}
         />
-      )) : <View />}
+      ) : (
+        balances && balances.map((balance, index) => (
+          <RestaurantCard
+            key={index}
+            theme={theme}
+            solde={balance.amount}
+            repas={balance.remaining}
+          />
+        ))
+      )}
 
       <HorizontalList style={styles.horizontalList}>
         <Item
           title="Historique"
           icon={<Clock2 color={colors.text} />}
           onPress={() => navigation.navigate("RestaurantHistory")}
+          enable={balances?.length !== 0}
         />
         <Item
           title="QR-Code"
           icon={<QrCode color={colors.text} />}
           onPress={() => navigation.navigate("RestaurantQrCode")}
+          enable={balances?.length !== 0}
         />
       </HorizontalList>
-
       <View style={styles.calendarContainer}>
         <TouchableOpacity style={styles.calendarButton}>
           <ChevronLeft color={colors.text + "70"} />
