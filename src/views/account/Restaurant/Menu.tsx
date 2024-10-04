@@ -35,9 +35,14 @@ import { Balance } from "@/services/shared/Balance";
 import { balanceFromExternal } from "@/services/balance";
 import MissingItem from "@/components/Global/MissingItem";
 import { animPapillon } from "@/utils/ui/animations";
-import { FadeInDown, FadeOut } from "react-native-reanimated";
+import Reanimated, { FadeIn, FadeInDown, FadeOut, LinearTransition } from "react-native-reanimated";
 import { reservationHistoryFromExternal } from "@/services/reservation-history";
 import { ReservationHistory } from "@/services/shared/ReservationHistory";
+import { getMenu } from "@/services/menu";
+import type { Menu as PawnoteMenu } from "pawnote";
+import { PapillonHeaderSelector } from "@/components/Global/PapillonModernHeader";
+import AnimatedNumber from "@/components/Global/AnimatedNumber";
+import { LessonsDateModal } from "../Lessons/LessonsHeader";
 
 const Menu: Screen<"Menu"> = ({
   route,
@@ -62,13 +67,23 @@ const Menu: Screen<"Menu"> = ({
     });
   }, [navigation, route.params, theme.colors.text]);
 
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
   const [balances, setBalances] = useState<Balance[] | null>(null);
   const [history, setHistory] = useState<ReservationHistory[] | null>(null);
-
+  const [menu, setMenu] = useState<PawnoteMenu | null>(null);
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [pickerDate, setPickerDate] = React.useState(new Date(today));
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
     void async function () {
       const balances: Balance[] = [];
       const histories: ReservationHistory[] = [];
+      let dailyMenu: PawnoteMenu | null = null;
+      if (account) {
+        dailyMenu = await getMenu(account, pickerDate);
+      }
       for (const account of linkedAccounts) {
         const balance = await balanceFromExternal(account);
         const history = await reservationHistoryFromExternal(account);
@@ -78,8 +93,19 @@ const Menu: Screen<"Menu"> = ({
 
       setBalances(balances);
       setHistory(histories);
+      setMenu(dailyMenu);
     }();
   }, [linkedAccounts]);
+
+  const updateMenu = async (date: Date) => {
+    setLoading(true);
+    let dailyMenu: PawnoteMenu | null = null;
+    if (account) {
+      dailyMenu = await getMenu(account, date);
+    }
+    setMenu(dailyMenu);
+    setLoading(false);
+  };
 
   return (
     <ScrollView contentContainerStyle={styles.scrollViewContent}>
@@ -142,50 +168,118 @@ const Menu: Screen<"Menu"> = ({
         />
       </HorizontalList>
       <View style={styles.calendarContainer}>
-        <TouchableOpacity style={styles.calendarButton}>
-          <ChevronLeft color={colors.text + "70"} />
-        </TouchableOpacity>
-        <View
-          style={[
-            styles.calendarTextContainer,
-            { backgroundColor: colors.primary + "22" },
-          ]}
+        <PapillonHeaderSelector
+          loading={loading}
+          onPress={() => setShowDatePicker(true)}
         >
-          <Calendar size={20} color={colors.primary} />
-          <Text
-            style={[styles.calendarText, { color: colors.primary }]}
+          <Reanimated.View
+            layout={animPapillon(LinearTransition)}
           >
-            vendredi 03 avril
-          </Text>
-        </View>
-        <TouchableOpacity style={styles.calendarButton}>
-          <ChevronRight color={colors.text + "70"} />
-        </TouchableOpacity>
-      </View>
+            <Reanimated.View
+              key={pickerDate.toLocaleDateString("fr-FR", { weekday: "short" })}
+              entering={FadeIn.duration(150)}
+              exiting={FadeOut.duration(150)}
+            >
+              <Reanimated.Text style={[styles.weekPickerText, styles.weekPickerTextIntl,
+                {
+                  color: theme.colors.text,
+                }
+              ]}
+              >
+                {pickerDate.toLocaleDateString("fr-FR", { weekday: "long" })}
+              </Reanimated.Text>
+            </Reanimated.View>
+          </Reanimated.View>
 
-      <NativeListHeader label="Menus du jour" />
-      <NativeList>
-        <NativeItem>
-          <NativeText variant="subtitle">Entrée</NativeText>
-          <NativeText variant="title">Salade de tomates</NativeText>
-          <NativeText variant="title">Kebab maison</NativeText>
-        </NativeItem>
-        <NativeItem>
-          <NativeText variant="subtitle">Plat</NativeText>
-          <NativeText variant="title">Poulet rôti</NativeText>
-          <NativeText variant="title">Pâtes</NativeText>
-        </NativeItem>
-        <NativeItem>
-          <NativeText variant="subtitle">Dessert</NativeText>
-          <NativeText variant="title">Yaourt</NativeText>
-          <NativeText variant="title">Fruit</NativeText>
-        </NativeItem>
-        <NativeItem>
-          <NativeText variant="subtitle">Boisson</NativeText>
-          <NativeText variant="title">Eau</NativeText>
-          <NativeText variant="title">Coca-Cola</NativeText>
-        </NativeItem>
-      </NativeList>
+
+          <AnimatedNumber
+            value={pickerDate.getDate().toString()}
+            style={[styles.weekPickerText, styles.weekPickerTextNbr,
+              {
+                color: theme.colors.text,
+              }
+            ]}
+          />
+
+          <Reanimated.Text style={[styles.weekPickerText, styles.weekPickerTextIntl,
+            {
+              color: theme.colors.text,
+            }
+          ]}
+          layout={animPapillon(LinearTransition)}
+          >
+            {pickerDate.toLocaleDateString("fr-FR", { month: "long" })}
+          </Reanimated.Text>
+        </PapillonHeaderSelector>
+      </View>
+      { menu?.lunch ? (
+        <>
+          <NativeListHeader label="Menus du jour" />
+          <NativeList>
+            {menu.lunch.entry && (
+              <NativeItem>
+                <NativeText variant="subtitle">Entrée</NativeText>
+                {menu.lunch.entry.map((food, index) => (
+                  <NativeText key={index} variant="title">{food.name}</NativeText>
+                ))}
+              </NativeItem>
+            )}
+            {menu.lunch.main && (
+              <NativeItem>
+                <NativeText variant="subtitle">Plat</NativeText>
+                {menu.lunch.main.map((food, index) => (
+                  <NativeText key={index} variant="title">{food.name}</NativeText>
+                ))}
+              </NativeItem>
+            )}
+            {menu.lunch.fromage && (
+              <NativeItem>
+                <NativeText variant="subtitle">Fromage</NativeText>
+                {menu.lunch.fromage.map((food, index) => (
+                  <NativeText key={index} variant="title">{food.name}</NativeText>
+                ))}
+              </NativeItem>
+            )}
+            {menu.lunch.dessert && (
+              <NativeItem>
+                <NativeText variant="subtitle">Dessert</NativeText>
+                {menu.lunch.dessert.map((food, index) => (
+                  <NativeText key={index} variant="title">{food.name}</NativeText>
+                ))}
+              </NativeItem>
+            )}
+            {menu.lunch.drink && (
+              <NativeItem>
+                <NativeText variant="subtitle">Boisson</NativeText> {/* Correction ici */}
+                {menu.lunch.drink.map((food, index) => (
+                  <NativeText key={index} variant="title">{food.name}</NativeText>
+                ))}
+              </NativeItem>
+            )}
+          </NativeList>
+        </>
+      ) : (
+        <MissingItem
+          emoji="❌"
+          title="Aucun repas prévu"
+          description={`Malheureusement, aucun repas n'est prévu pour le ${pickerDate.toLocaleDateString("fr-FR", { weekday: "long", month: "long", day: "numeric" })}.`}
+          entering={animPapillon(FadeInDown)}
+          exiting={animPapillon(FadeOut)}
+          style={{ marginTop: 16 }}
+        />
+      )}
+
+      <LessonsDateModal
+        showDatePicker={showDatePicker}
+        setShowDatePicker={setShowDatePicker}
+        currentDate={pickerDate}
+        onDateSelect={(date: Date) => {
+          const newDate = new Date(date);
+          newDate.setHours(0, 0, 0, 0);
+          setPickerDate(newDate);
+          updateMenu(newDate);
+        }}
+      />
     </ScrollView>
   );
 };
@@ -253,7 +347,22 @@ const styles = StyleSheet.create({
     height: 7,
     borderRadius: 5,
     marginHorizontal: 4,
-  }
+  },
+  weekPickerText: {
+    zIndex: 10000,
+  },
+
+  weekPickerTextIntl: {
+    fontSize: 14.5,
+    fontFamily: "medium",
+    opacity: 0.7,
+  },
+
+  weekPickerTextNbr: {
+    fontSize: 16.5,
+    fontFamily: "semibold",
+    marginTop: -1.5,
+  },
 });
 
 export default Menu;
