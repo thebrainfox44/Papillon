@@ -85,10 +85,14 @@ const Menu: Screen<"Menu"> = ({
         dailyMenu = await getMenu(account, pickerDate);
       }
       for (const account of linkedAccounts) {
-        const balance = await balanceFromExternal(account);
-        const history = await reservationHistoryFromExternal(account);
-        balances.push(...balance);
-        histories.push(...history);
+        try {
+          const balance = await balanceFromExternal(account);
+          const history = await reservationHistoryFromExternal(account);
+          balances.push(...balance);
+          histories.push(...history);
+        } catch (error) {
+          console.warn("Failed to fetch balance or history for account", account);
+        }
       }
 
       setBalances(balances);
@@ -212,7 +216,7 @@ const Menu: Screen<"Menu"> = ({
           </Reanimated.Text>
         </PapillonHeaderSelector>
       </View>
-      { menu?.lunch ? (
+      {!loading && menu?.lunch ? (
         <>
           <NativeListHeader label="Menus du jour" />
           <NativeList>
@@ -250,7 +254,7 @@ const Menu: Screen<"Menu"> = ({
             )}
             {menu.lunch.drink && (
               <NativeItem>
-                <NativeText variant="subtitle">Boisson</NativeText> {/* Correction ici */}
+                <NativeText variant="subtitle">Boisson</NativeText>
                 {menu.lunch.drink.map((food, index) => (
                   <NativeText key={index} variant="title">{food.name}</NativeText>
                 ))}
@@ -258,7 +262,7 @@ const Menu: Screen<"Menu"> = ({
             )}
           </NativeList>
         </>
-      ) : (
+      ) : !loading ? (
         <MissingItem
           emoji="❌"
           title="Aucun repas prévu"
@@ -267,7 +271,7 @@ const Menu: Screen<"Menu"> = ({
           exiting={animPapillon(FadeOut)}
           style={{ marginTop: 16 }}
         />
-      )}
+      ) : null}
 
       <LessonsDateModal
         showDatePicker={showDatePicker}
@@ -278,6 +282,7 @@ const Menu: Screen<"Menu"> = ({
           newDate.setHours(0, 0, 0, 0);
           setPickerDate(newDate);
           updateMenu(newDate);
+          setShowDatePicker(false);
         }}
       />
     </ScrollView>
