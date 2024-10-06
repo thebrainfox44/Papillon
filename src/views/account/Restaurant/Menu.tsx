@@ -29,7 +29,7 @@ import {
   NativeText,
 } from "@/components/Global/NativeComponents";
 import { useCurrentAccount } from "@/stores/account";
-import { AccountService } from "@/stores/account/types";
+import { AccountService, ExternalAccount } from "@/stores/account/types";
 import TabAnimatedTitle from "@/components/Global/TabAnimatedTitle";
 import { Balance } from "@/services/shared/Balance";
 import { balanceFromExternal } from "@/services/balance";
@@ -37,6 +37,7 @@ import MissingItem from "@/components/Global/MissingItem";
 import { animPapillon } from "@/utils/ui/animations";
 import Reanimated, { FadeIn, FadeInDown, FadeOut, LinearTransition } from "react-native-reanimated";
 import { reservationHistoryFromExternal } from "@/services/reservation-history";
+import { qrcodeFromExternal } from "@/services/qrcode";
 import { ReservationHistory } from "@/services/shared/ReservationHistory";
 import { getMenu } from "@/services/menu";
 import type { Menu as PawnoteMenu } from "pawnote";
@@ -72,7 +73,9 @@ const Menu: Screen<"Menu"> = ({
 
   const [balances, setBalances] = useState<Balance[] | null>(null);
   const [history, setHistory] = useState<ReservationHistory[] | null>(null);
+  const [qrcode, setQRCodes] = useState<number[] | null>(null);
   const [menu, setMenu] = useState<PawnoteMenu | null>(null);
+
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [pickerDate, setPickerDate] = React.useState(new Date(today));
   const [loading, setLoading] = useState(false);
@@ -80,6 +83,7 @@ const Menu: Screen<"Menu"> = ({
     void async function () {
       const balances: Balance[] = [];
       const histories: ReservationHistory[] = [];
+      const qrcodes: number[] = [];
       let dailyMenu: PawnoteMenu | null = null;
       if (account) {
         dailyMenu = await getMenu(account, pickerDate);
@@ -88,8 +92,10 @@ const Menu: Screen<"Menu"> = ({
         try {
           const balance = await balanceFromExternal(account);
           const history = await reservationHistoryFromExternal(account);
+          const cardnumber = await qrcodeFromExternal(account);
           balances.push(...balance);
           histories.push(...history);
+          cardnumber !== 0 && qrcodes.push(cardnumber);
         } catch (error) {
           console.warn("Failed to fetch balance or history for account", account);
         }
@@ -97,6 +103,7 @@ const Menu: Screen<"Menu"> = ({
 
       setBalances(balances);
       setHistory(histories);
+      setQRCodes(qrcodes);
       setMenu(dailyMenu);
     }();
   }, [linkedAccounts]);
@@ -134,7 +141,6 @@ const Menu: Screen<"Menu"> = ({
           {balances?.map((item, index) => (
             <View style={{ width: screenWidth - 32 }}>
               <RestaurantCard
-                theme={theme}
                 solde={item.amount}
                 repas={item.remaining}
               />
@@ -167,7 +173,7 @@ const Menu: Screen<"Menu"> = ({
         <Item
           title="QR-Code"
           icon={<QrCode color={colors.text} />}
-          onPress={() => navigation.navigate("RestaurantQrCode")}
+          onPress={() => navigation.navigate("RestaurantQrCode", { QrCodes: qrcode ?? [] })}
           enable={balances?.length !== 0}
         />
       </HorizontalList>
@@ -265,8 +271,8 @@ const Menu: Screen<"Menu"> = ({
       ) : !loading ? (
         <MissingItem
           emoji="❌"
-          title="Aucun repas prévu"
-          description={`Malheureusement, aucun repas n'est prévu pour le ${pickerDate.toLocaleDateString("fr-FR", { weekday: "long", month: "long", day: "numeric" })}.`}
+          title="Aucun menu prévu"
+          description={`Malheureusement, aucun menu n'est prévu pour le ${pickerDate.toLocaleDateString("fr-FR", { weekday: "long", month: "long", day: "numeric" })}.`}
           entering={animPapillon(FadeInDown)}
           exiting={animPapillon(FadeOut)}
           style={{ marginTop: 16 }}

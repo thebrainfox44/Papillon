@@ -1,6 +1,6 @@
 import { useTheme } from "@react-navigation/native";
 import { PieChart, Pizza } from "lucide-react-native";
-import React, { forwardRef, useEffect, useImperativeHandle, useMemo } from "react";
+import React, { forwardRef, useEffect, useImperativeHandle, useMemo, useState } from "react";
 import { Text, View } from "react-native";
 import Reanimated, {
   LinearTransition
@@ -11,6 +11,12 @@ import { WidgetProps } from "@/components/Home/Widget";
 import { useCurrentAccount } from "@/stores/account";
 import QRCode from "react-native-qrcode-svg";
 import { AccountService } from "@/stores/account/types";
+import { qrcodeFromExternal } from "@/services/qrcode";
+import { useNavigation } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { RouteParameters } from "./../../router/helpers/types";
+
+type NavigationProps = StackNavigationProp<RouteParameters, "RestaurantQrCode">;
 
 const RestaurantQRCodeWidget = forwardRef(({
   setLoading,
@@ -22,24 +28,32 @@ const RestaurantQRCodeWidget = forwardRef(({
 
   const account = useCurrentAccount((store) => store.account);
   const linkedAccounts = useCurrentAccount(store => store.linkedAccounts);
+  const [qrcode, setQRCodes] = useState<number[] | null>(null);
+  const navigation = useNavigation<NavigationProps>();
 
   useImperativeHandle(ref, () => ({
-    handlePress: () => "RestaurantQrCode"
+    handlePress: () => {
+      navigation.navigate("RestaurantQrCode", { QrCodes: qrcode ?? [] });
+    }
   }));
 
   useEffect(() => {
     void async function () {
-      const now = new Date();
-      const currentHour = now.getHours();
-      for (const linkedAccount of linkedAccounts) {
-        if (linkedAccount.service === AccountService.Turboself || linkedAccount.service === AccountService.ARD) {
-          setHidden(!(currentHour >= 11 && currentHour < 14));
-          setLoading(false);
-          return;
+      setHidden(true);
+      setLoading(true);
+      const qrcodes: number[] = [];
+      const currentHour = new Date().getHours();
+      for (const account of linkedAccounts) {
+        if (account.service === AccountService.Turboself || account.service === AccountService.ARD) {
+          const cardnumber = await qrcodeFromExternal(account);
+          cardnumber !== 0 && qrcodes.push(cardnumber);
         }
       }
+      setQRCodes(qrcodes);
+      setHidden(qrcodes.length === 0 || currentHour < 11 || currentHour > 14);
+      setLoading(false);
     }();
-  }, [linkedAccounts]);
+  }, [linkedAccounts, setHidden]);
 
   return (
     <>

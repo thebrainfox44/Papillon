@@ -30,16 +30,17 @@ const RestaurantBalanceWidget = forwardRef(({
 
   useEffect(() => {
     void async function () {
+      setHidden(true);
       setLoading(true);
       const balances: Balance[] = [];
       for (const account of linkedAccounts) {
         if (account.service === AccountService.Turboself || account.service === AccountService.ARD) {
           const balance = await balanceFromExternal(account);
           balances.push(...balance);
-          setHidden(false);
         }
       }
       setBalances(balances);
+      setHidden(balances.length === 0);
       setLoading(false);
     }();
   }, [linkedAccounts, setHidden]);
