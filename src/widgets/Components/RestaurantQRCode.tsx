@@ -29,21 +29,17 @@ const RestaurantQRCodeWidget = forwardRef(({
 
   useEffect(() => {
     void async function () {
+      const now = new Date();
+      const currentHour = now.getHours();
       for (const linkedAccount of linkedAccounts) {
         if (linkedAccount.service === AccountService.Turboself || linkedAccount.service === AccountService.ARD) {
-          setHidden(false);
+          setHidden(!(currentHour >= 11 && currentHour < 14));
           setLoading(false);
           return;
         }
       }
     }();
   }, [linkedAccounts]);
-
-  useEffect(() => {
-    const now = new Date();
-    const currentHour = now.getHours();
-    setHidden(currentHour < 11 || currentHour > 14);
-  }, []);
 
   return (
     <>
