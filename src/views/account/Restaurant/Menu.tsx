@@ -1,22 +1,14 @@
 import React, { useEffect, useLayoutEffect, useState } from "react";
 import {
   View,
-  Text,
-  TouchableOpacity,
   ScrollView,
   StyleSheet,
   Dimensions,
 } from "react-native";
 import { useTheme } from "@react-navigation/native";
-import * as WebBrowser from "expo-web-browser";
 import {
-  X,
   Clock2,
   QrCode,
-  ChevronLeft,
-  ChevronRight,
-  Calendar,
-  Wallet,
 } from "lucide-react-native";
 
 import type { Screen } from "@/router/helpers/types";
@@ -29,13 +21,12 @@ import {
   NativeText,
 } from "@/components/Global/NativeComponents";
 import { useCurrentAccount } from "@/stores/account";
-import { AccountService, ExternalAccount } from "@/stores/account/types";
 import TabAnimatedTitle from "@/components/Global/TabAnimatedTitle";
 import { Balance } from "@/services/shared/Balance";
 import { balanceFromExternal } from "@/services/balance";
 import MissingItem from "@/components/Global/MissingItem";
 import { animPapillon } from "@/utils/ui/animations";
-import Reanimated, { FadeIn, FadeInDown, FadeOut, LinearTransition } from "react-native-reanimated";
+import Reanimated, { FadeIn, FadeInDown, FadeInUp, FadeOut, FadeOutDown, LinearTransition } from "react-native-reanimated";
 import { reservationHistoryFromExternal } from "@/services/reservation-history";
 import { qrcodeFromExternal } from "@/services/qrcode";
 import { ReservationHistory } from "@/services/shared/ReservationHistory";
@@ -78,6 +69,7 @@ const Menu: Screen<"Menu"> = ({
 
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [pickerDate, setPickerDate] = React.useState(new Date(today));
+  const [menuLoading, setMenuLoading] = useState(false);
   const [loading, setLoading] = useState(false);
   useEffect(() => {
     void async function () {
@@ -97,7 +89,7 @@ const Menu: Screen<"Menu"> = ({
           histories.push(...history);
           cardnumber !== 0 && qrcodes.push(cardnumber);
         } catch (error) {
-          console.warn("Failed to fetch balance or history for account", account);
+          // console.warn("Failed to fetch balance or history for account", account);
         }
       }
 
@@ -109,13 +101,13 @@ const Menu: Screen<"Menu"> = ({
   }, [linkedAccounts]);
 
   const updateMenu = async (date: Date) => {
-    setLoading(true);
+    setMenuLoading(true);
     let dailyMenu: PawnoteMenu | null = null;
     if (account) {
       dailyMenu = await getMenu(account, date);
     }
     setMenu(dailyMenu);
-    setLoading(false);
+    setMenuLoading(false);
   };
 
   return (
@@ -129,7 +121,7 @@ const Menu: Screen<"Menu"> = ({
           exiting={animPapillon(FadeOut)}
         />
       ) : (
-        <ScrollView
+        <Reanimated.ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
           snapToInterval={screenWidth}
@@ -137,16 +129,19 @@ const Menu: Screen<"Menu"> = ({
           decelerationRate="fast"
           scrollEnabled={(balances ?? []).length > 1}
           contentContainerStyle={{ alignItems: "center", gap: 16 }}
+          layout={LinearTransition.springify().mass(1).damping(20).stiffness(300)}
+          entering={FadeInUp}
+          exiting={FadeOutDown}
         >
           {balances?.map((item, index) => (
-            <View style={{ width: screenWidth - 32 }}>
+            <View style={{ width: screenWidth - 32 }} key={index}>
               <RestaurantCard
                 solde={item.amount}
                 repas={item.remaining}
               />
             </View>
           ))}
-        </ScrollView>
+        </Reanimated.ScrollView>
       )}
 
       {balances && balances.length > 1 && (
@@ -174,12 +169,12 @@ const Menu: Screen<"Menu"> = ({
           title="QR-Code"
           icon={<QrCode color={colors.text} />}
           onPress={() => navigation.navigate("RestaurantQrCode", { QrCodes: qrcode ?? [] })}
-          enable={balances?.length !== 0}
+          enable={qrcode?.length !== 0}
         />
       </HorizontalList>
       <View style={styles.calendarContainer}>
         <PapillonHeaderSelector
-          loading={loading}
+          loading={menuLoading}
           onPress={() => setShowDatePicker(true)}
         >
           <Reanimated.View
@@ -222,7 +217,7 @@ const Menu: Screen<"Menu"> = ({
           </Reanimated.Text>
         </PapillonHeaderSelector>
       </View>
-      {!loading && menu?.lunch ? (
+      {!menuLoading && menu?.lunch ? (
         <>
           <NativeListHeader label="Menus du jour" />
           <NativeList>
@@ -268,7 +263,7 @@ const Menu: Screen<"Menu"> = ({
             )}
           </NativeList>
         </>
-      ) : !loading ? (
+      ) : !menuLoading ? (
         <MissingItem
           emoji="❌"
           title="Aucun menu prévu"

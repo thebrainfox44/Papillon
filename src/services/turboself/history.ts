@@ -7,6 +7,7 @@ export const getHistory = async (account: TurboselfAccount): Promise<Reservation
   return (history ?? []).map((reservation) => ({
     timestamp: reservation.date.getTime(),
     amount: reservation.amount / 100,
-    currency: account.authentication.session.establishment?.currencySymbol ?? "€"
+    currency: account.authentication.session.establishment?.currencySymbol ?? "€",
+    label: reservation.label,
   }));
 };
