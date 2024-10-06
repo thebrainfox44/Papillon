@@ -119,7 +119,7 @@ const RestaurantBalanceWidget = forwardRef(({
               paddingVertical: 3,
             }}
           >
-            {currentBalance?.remaining ?? 0} repas restants
+            {currentBalance?.remaining ?? 0} {currentBalance?.remaining === 1 ? "repas restant" : "repas restants"}
           </Text>
         </View>
       </Reanimated.View>
