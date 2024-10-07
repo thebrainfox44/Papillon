@@ -12,5 +12,8 @@ export const qrcodeFromExternal = async (account: ExternalAccount): Promise<numb
       // TODO: Implement ARD
       return 0;
     }
+    default: {
+      return 0;
+    }
   }
 };

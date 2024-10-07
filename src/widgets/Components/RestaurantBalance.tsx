@@ -40,7 +40,7 @@ const RestaurantBalanceWidget = forwardRef(({
         }
       }
       setBalances(balances);
-      setHidden(balances.length === 0);
+      setHidden(balances.length === 0 || balances.every(balance => balance.remaining === 0));
       setLoading(false);
     }();
   }, [linkedAccounts, setHidden]);

@@ -12,5 +12,8 @@ export const balanceFromExternal = async (account: ExternalAccount): Promise<Bal
       const { balance } = await import("./ard/balance");
       return balance(account);
     }
+    default: {
+      return [];
+    }
   }
 };
