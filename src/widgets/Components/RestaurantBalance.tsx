@@ -1,12 +1,11 @@
 import { useTheme } from "@react-navigation/native";
-import { PieChart, Pizza } from "lucide-react-native";
+import { Pizza } from "lucide-react-native";
 import React, { forwardRef, useEffect, useImperativeHandle, useMemo, useState } from "react";
 import { Text, View } from "react-native";
 import Reanimated, { LinearTransition } from "react-native-reanimated";
 import AnimatedNumber from "@/components/Global/AnimatedNumber";
 import { WidgetProps } from "@/components/Home/Widget";
 import { useCurrentAccount } from "@/stores/account";
-import QRCode from "react-native-qrcode-svg";
 import { AccountService } from "@/stores/account/types";
 import { Balance } from "@/services/shared/Balance";
 import { balanceFromExternal } from "@/services/balance";

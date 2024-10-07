@@ -8,8 +8,12 @@ import { animPapillon } from "@/utils/ui/animations";
 import { Fragment, useEffect, useMemo, useState } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 import { FadeInDown, FadeOut } from "react-native-reanimated";
+import { RouteParameters } from "../../../../router/helpers/types";
+import { RouteProp } from "@react-navigation/native";
 
-const RestaurantHistory = ({ route }) => {
+type NavigationProps = RouteProp<RouteParameters, "RestaurantHistory">;
+
+const RestaurantHistory = ({ route }: { route: NavigationProps }) => {
   const accounts = useAccounts((state) => state.accounts);
   const account = useCurrentAccount(store => store.account);
 
