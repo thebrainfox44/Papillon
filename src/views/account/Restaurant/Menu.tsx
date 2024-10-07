@@ -265,7 +265,7 @@ const Menu: Screen<"Menu"> = ({
 
           {allBookings && allBookings.length > 0 && (
             <>
-              <NativeListHeader label="Réservations disponibles" />
+              <NativeListHeader label={allBookings.length > 1 ? "Réservations disponibles" : "Réservation disponible"} />
               <NativeList>
                 {allBookings.map((booking, index) => (
                   <React.Fragment key={index}>
