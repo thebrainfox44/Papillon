@@ -40,7 +40,7 @@ import type { Menu as PawnoteMenu } from "pawnote";
 import { PapillonHeaderSelector } from "@/components/Global/PapillonModernHeader";
 import AnimatedNumber from "@/components/Global/AnimatedNumber";
 import { LessonsDateModal } from "../Lessons/LessonsHeader";
-import { BookingTerminal } from "@/services/shared/Booking";
+import { BookingTerminal, BookingDay } from "@/services/shared/Booking";
 import { bookDayFromExternal, getBookingsAvailableFromExternal } from "@/services/booking";
 
 const Menu: Screen<"Menu"> = ({
@@ -140,20 +140,35 @@ const Menu: Screen<"Menu"> = ({
       for (const account of linkedAccounts) {
         const bookingsForAccount = await getBookingsAvailableFromExternal(account, newWeek);
 
-        if (Array.isArray(bookingsForAccount)) {
-          allBookings.push(...bookingsForAccount);
-        }
+        allBookings.push(...bookingsForAccount);
       }
 
       setAllBookings(allBookings);
     }
 
     const dailyMenu = account ? await getMenu(account, date) : null;
-
     setCurrentMenu(dailyMenu);
     setMenuLoading(false);
   };
 
+  const handleBookTogglePress = async (terminal: BookingTerminal, bookingDay: BookingDay) => {
+    setIsDateBooked(!isDateBooked);
+    try {
+      await bookDayFromExternal(terminal.account, bookingDay.id, pickerDate, !isDateBooked);
+      const newBalances: Balance[] | null = allBalances
+        ? allBalances.map((balance) => {
+          if (balance.remaining > 0) {
+            return { ...balance, remaining: balance.remaining - 1 };
+          }
+          return balance;
+        })
+        : null;
+      setAllBalances(newBalances);
+    } catch (error) {
+      Alert.alert("Erreur", "Une erreur est survenue lors de la réservation du repas");
+      setIsDateBooked(isDateBooked);
+    }
+  };
 
   return (
     <ScrollView contentContainerStyle={styles.scrollViewContent}>
@@ -263,48 +278,31 @@ const Menu: Screen<"Menu"> = ({
             </PapillonHeaderSelector>
           </View>
 
-          {allBookings && allBookings.length > 0 && (
+          {allBookings?.length && (allBookings?.some((terminal) => terminal.days.some((day) => day.date.toDateString() === pickerDate.toDateString())) ?? false) && (
             <>
               <NativeListHeader label={allBookings.length > 1 ? "Réservations disponibles" : "Réservation disponible"} />
               <NativeList>
-                {allBookings.map((booking, index) => (
+                {allBookings.map((terminal, index) => (
                   <React.Fragment key={index}>
-                    {booking.days.map((day, dayIndex) =>
-                      day.date.toDateString() === pickerDate.toDateString() ? (
+                    {terminal.days.map((bookingDay, dayIndex) =>
+                      bookingDay.date.toDateString() === pickerDate.toDateString() ? (
                         <NativeItem
                           separator
-                          disabled={!day.canBook || (allBalances?.every((balance) => balance.remaining === 0) ?? false)}
+                          disabled={!bookingDay.canBook || (allBalances?.every((balance) => balance.remaining === 0) ?? false)}
                           icon={<Utensils />}
                           key={dayIndex}
                           trailing={
                             <Switch
                               value={isDateBooked}
-                              disabled={!day.canBook || (allBalances?.every((balance) => balance.remaining === 0) ?? false)}
-                              onValueChange={async () => {
-                                setIsDateBooked(!isDateBooked);
-                                try {
-                                  await bookDayFromExternal(booking.account, day.id, pickerDate, !isDateBooked);
-                                  const newBalances: Balance[] | null = allBalances
-                                    ? allBalances.map((balance) => {
-                                      if (balance.remaining > 0) {
-                                        return { ...balance, remaining: balance.remaining - 1 };
-                                      }
-                                      return balance;
-                                    })
-                                    : null;
-                                  setAllBalances(newBalances);
-                                } catch (error) {
-                                  Alert.alert("Erreur", "Une erreur est survenue lors de la réservation du repas");
-                                  setIsDateBooked(isDateBooked);
-                                }
-                              }}
+                              disabled={!bookingDay.canBook || (allBalances?.every((balance) => balance.remaining === 0) ?? false)}
+                              onValueChange={() => handleBookTogglePress(terminal, bookingDay)}
                             />
                           }
                         >
                           <NativeText style={{ fontSize: 16, fontFamily: "semibold", color: theme.colors.text }}>
                             Réserver mon repas
                           </NativeText>
-                          <NativeText variant="subtitle">Borne {booking.terminalLabel}</NativeText>
+                          <NativeText variant="subtitle">Borne {terminal.terminalLabel}</NativeText>
                         </NativeItem>
                       ) : null
                     )}
