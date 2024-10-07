@@ -278,7 +278,7 @@ const Menu: Screen<"Menu"> = ({
             </PapillonHeaderSelector>
           </View>
 
-          {allBookings?.length && (allBookings?.some((terminal) => terminal.days.some((day) => day.date.toDateString() === pickerDate.toDateString())) ?? false) && (
+          {allBookings && allBookings.length > 0 && (allBookings?.some((terminal) => terminal.days.some((day) => day.date.toDateString() === pickerDate.toDateString())) ?? false) && (
             <>
               <NativeListHeader label={allBookings.length > 1 ? "Réservations disponibles" : "Réservation disponible"} />
               <NativeList>
@@ -330,7 +330,7 @@ const Menu: Screen<"Menu"> = ({
                       <NativeText variant="subtitle">{title}</NativeText>
                       {items.map((food, idx) => (
                         <NativeText key={idx} variant="title">
-                          {food.name}
+                          {food.name ?? ""}
                         </NativeText>
                       ))}
                     </NativeItem>
