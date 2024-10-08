@@ -346,6 +346,7 @@ const Menu: Screen<"Menu"> = ({
                 weekday: "long",
                 month: "long",
                 day: "numeric",
+                year: "numeric",
               })}.`}
               entering={animPapillon(FadeInDown)}
               exiting={animPapillon(FadeOut)}

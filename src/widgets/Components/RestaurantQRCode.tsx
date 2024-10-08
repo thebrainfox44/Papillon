@@ -99,7 +99,6 @@ const RestaurantQRCodeWidget = forwardRef(({
           }}
           layout={LinearTransition}
         >
-          Toucher pour afficher le QR-Code
           {qrcode && qrcode.length > 1 ? "Toucher pour afficher les QR-Codes" : "Toucher pour afficher le QR-Code"}
         </Reanimated.Text>
         <View style={{
