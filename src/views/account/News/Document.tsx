@@ -123,8 +123,7 @@ const NewsItem = ({ route, navigation }) => {
           flex: 1,
         }}
         contentContainerStyle={{
-          paddingBottom: !message.ref.needToAcknowledge ? 16 : 0,
-          paddingTop: !message.ref.needToAcknowledge ? 96 : 0,
+          paddingBottom: !message.ref.mustAcknowledge ? 16 : 0,
         }}
       >
         <View style={{ paddingHorizontal: 16, marginTop: message.ref.needToAcknowledge ? 100 : 0 }}>
@@ -158,7 +157,7 @@ const NewsItem = ({ route, navigation }) => {
               />
               <Text
                 style={{
-                  color: message.acknowledged ? "grey" : theme.dark ? "white" : "dark",
+                  color: message.acknowledged ? "grey" : theme.colors.text,
                 }}
               >
                 J'ai lu et pris connaissance
