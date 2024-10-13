@@ -123,9 +123,6 @@ const NewsItem = ({ route, navigation }) => {
         style={{
           flex: 1,
         }}
-        contentContainerStyle={{
-          paddingBottom: !message.ref.mustAcknowledge ? 16 : 0,
-        }}
       >
         <View style={{ paddingHorizontal: 16, marginTop: message.ref.needToAcknowledge ? 100 : 0 }}>
           {message.ref.needToAcknowledge && (
