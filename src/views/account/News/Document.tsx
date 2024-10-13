@@ -23,6 +23,7 @@ import { useCurrentAccount } from "@/stores/account";
 import PapillonPicker from "@/components/Global/PapillonPicker";
 import PapillonCheckbox from "@/components/Global/PapillonCheckbox";
 import { newsInformationAcknowledge } from "pawnote";
+import parse_initials from "@/utils/format/format_pronote_initials";
 
 const NewsItem = ({ route, navigation }) => {
   const [message, setMessage] = useState<Information>(route.params.message && JSON.parse(route.params.message) as Information);
@@ -70,7 +71,7 @@ const NewsItem = ({ route, navigation }) => {
       <PapillonModernHeader outsideNav={true}>
         <View style={{ flexDirection: "row", gap: 10, alignItems: "center" }}>
           <InitialIndicator
-            initial={message.author}
+            initial={parse_initials(message.author)}
             color={theme.colors.primary}
           />
           <View style={{ flex: 1 }}>
