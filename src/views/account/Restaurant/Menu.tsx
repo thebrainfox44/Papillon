@@ -302,7 +302,7 @@ const Menu: Screen<"Menu"> = ({
                           <NativeText style={{ fontSize: 16, fontFamily: "semibold", color: theme.colors.text }}>
                             Réserver mon repas
                           </NativeText>
-                          <NativeText variant="subtitle">Borne {terminal.terminalLabel}</NativeText>
+                          <NativeText variant="subtitle">Borne "{terminal.terminalLabel}"</NativeText>
                         </NativeItem>
                       ) : null
                     )}

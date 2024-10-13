@@ -38,7 +38,8 @@ export async function reload <T extends Account> (account: T): Promise<Reconnect
       return { instance: res.instance, authentication: res.authentication };
     }
     default: {
-      throw new Error("Service not implemented.");
+      console.warn("Service not implemented");
+      return { instance: undefined, authentication: undefined };
     }
   }
 }

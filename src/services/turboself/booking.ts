@@ -22,7 +22,7 @@ export const getBookingWeek = async (account: TurboselfAccount, weekNumber?: num
 };
 
 export const bookDay = async (account: TurboselfAccount, id: string, date: Date, booked: boolean): Promise<BookingDay> => {
-  const bookedDay = await account.authentication.session.bookMeal(id, date.getDay() + 1, booked ? 1 : 0);
+  const bookedDay = await account.authentication.session.bookMeal(id, date.getDay(), booked ? 1 : 0);
   console.log(bookedDay);
   return {
     id: bookedDay.id,
