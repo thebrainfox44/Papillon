@@ -1,5 +1,10 @@
 import InsetsBottomView from "@/components/Global/InsetsBottomView";
-import { NativeItem, NativeList, NativeListHeader, NativeText } from "@/components/Global/NativeComponents";
+import {
+  NativeItem,
+  NativeList,
+  NativeListHeader,
+  NativeText,
+} from "@/components/Global/NativeComponents";
 import InitialIndicator from "@/components/News/InitialIndicator";
 import { Information } from "@/services/shared/Information";
 import formatDate from "@/utils/format/format_date_complets";
@@ -12,7 +17,13 @@ import {
   MoreHorizontal,
 } from "lucide-react-native";
 import React, { useEffect, useLayoutEffect, useState } from "react";
-import { View, Dimensions, Linking, Text, TouchableOpacity } from "react-native";
+import {
+  View,
+  Dimensions,
+  Linking,
+  Text,
+  TouchableOpacity,
+} from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 
 import RenderHtml from "react-native-render-html";
@@ -26,8 +37,10 @@ import { newsInformationAcknowledge } from "pawnote";
 import parse_initials from "@/utils/format/format_pronote_initials";
 import { selectColorSeed } from "@/utils/format/select_color_seed";
 
-const NewsItem = ({route, navigation, isED}) => {
-  const [message, setMessage] = useState<Information>(route.params.message && JSON.parse(route.params.message) as Information);
+const NewsItem = ({ route, navigation, isED }) => {
+  const [message, setMessage] = useState<Information>(
+    route.params.message && (JSON.parse(route.params.message) as Information)
+  );
   const important = route.params.important;
   const account = useCurrentAccount((store) => store.account!);
 
@@ -63,8 +76,8 @@ const NewsItem = ({route, navigation, isED}) => {
 
   const renderersProps = {
     a: {
-      onPress: onPress
-    }
+      onPress: onPress,
+    },
   };
 
   return (
@@ -75,12 +88,13 @@ const NewsItem = ({route, navigation, isED}) => {
             initial={parse_initials(message.author)}
             color={selectColorSeed(message.author)}
           />
-          <View style={{flex: 1, gap: 3}}>
-            <NativeText variant="title" numberOfLines={1}>{message.title === "" ? message.author : message.title}</NativeText>
-            <NativeText variant="subtitle" numberOfLines={1}>{message.title === "" ? formatDate(message.date) : message.author}</NativeText>
           <View style={{ flex: 1, gap: 3 }}>
-            <NativeText variant="title" numberOfLines={1}>{message.title === "" ? message.author : message.title}</NativeText>
-            <NativeText variant="subtitle" numberOfLines={1}>{message.title === "" ? formatDate(message.date) : message.author}</NativeText>
+            <NativeText variant="title" numberOfLines={1}>
+              {message.title === "" ? message.author : message.title}
+            </NativeText>
+            <NativeText variant="subtitle" numberOfLines={1}>
+              {message.title === "" ? formatDate(message.date) : message.author}
+            </NativeText>
           </View>
           {isED && (
             <PapillonPicker
@@ -90,28 +104,33 @@ const NewsItem = ({route, navigation, isED}) => {
               data={[
                 {
                   icon: message.read ? <EyeOff /> : <Eye />,
-                  label: message.read ? "Marquer comme non lu" : "Marquer comme lu",
+                  label: message.read
+                    ? "Marquer comme non lu"
+                    : "Marquer comme lu",
                   onPress: () => {
                     setNewsRead(account, message, !message.read);
                     setMessage((prev) => ({
                       ...prev,
                       read: !prev.read,
                     }));
-                  }
-                }
+                  },
+                },
               ]}
             >
               <TouchableOpacity>
                 <MoreHorizontal size={24} color={theme.colors.text} />
               </TouchableOpacity>
             </PapillonPicker>
-            )}
-          </View>
+          )}
         </View>
       </PapillonModernHeader>
       {important && (
         <LinearGradient
-          colors={!theme.dark ? [theme.colors.card, "#BFF6EF"] : [theme.colors.card, "#2C2C2C"]}
+          colors={
+            !theme.dark
+              ? [theme.colors.card, "#BFF6EF"]
+              : [theme.colors.card, "#2C2C2C"]
+          }
           start={[0, 0]}
           end={[2, 2]}
           style={{
@@ -129,16 +148,22 @@ const NewsItem = ({route, navigation, isED}) => {
       <ScrollView
         style={{
           flex: 1,
+          paddingBottom: 16,
+          paddingTop: 106,
         }}
       >
-        <View style={{ paddingHorizontal: 16, marginTop: message.ref.needToAcknowledge ? 100 : 0 }}>
+        <View
+          style={{
+            paddingHorizontal: 16,
+          }}
+        >
           {message.ref.needToAcknowledge && (
             <View
               style={{
                 flexDirection: "row",
                 alignItems: "center",
                 gap: 10,
-                marginBottom: 25
+                marginBottom: 25,
               }}
             >
               <PapillonCheckbox
@@ -170,7 +195,7 @@ const NewsItem = ({route, navigation, isED}) => {
             </View>
           )}
           <RenderHtml
-            contentWidth={Dimensions.get("window").width - (16 * 2)}
+            contentWidth={Dimensions.get("window").width - 16 * 2}
             source={{
               html: message.content,
             }}
@@ -185,28 +210,37 @@ const NewsItem = ({route, navigation, isED}) => {
           />
         </View>
 
-        {isED && <ScrollView horizontal={true} contentContainerStyle={{ gap: 5, paddingHorizontal: 16 }}>
-          <View style={{
-            padding: 4,
-            paddingHorizontal: 12,
-            borderWidth: 1,
-            borderRadius: 80,
-            borderColor: theme.colors.border,
-            marginTop: 16,
-          }}>
-            <NativeText>{message.category}</NativeText>
-          </View>
-          <View style={{
-            padding: 4,
-            paddingHorizontal: 12,
-            borderWidth: 1,
-            borderRadius: 80,
-            borderColor: theme.colors.border,
-            marginTop: 16,
-          }}>
-            <NativeText>{formatDate(message.date)}</NativeText>
-          </View>
-        </ScrollView>}
+        {isED && (
+          <ScrollView
+            horizontal={true}
+            contentContainerStyle={{ gap: 5, paddingHorizontal: 16 }}
+          >
+            <View
+              style={{
+                padding: 4,
+                paddingHorizontal: 12,
+                borderWidth: 1,
+                borderRadius: 80,
+                borderColor: theme.colors.border,
+                marginTop: 16,
+              }}
+            >
+              <NativeText>{message.category}</NativeText>
+            </View>
+            <View
+              style={{
+                padding: 4,
+                paddingHorizontal: 12,
+                borderWidth: 1,
+                borderRadius: 80,
+                borderColor: theme.colors.border,
+                marginTop: 16,
+              }}
+            >
+              <NativeText>{formatDate(message.date)}</NativeText>
+            </View>
+          </ScrollView>
+        )}
 
         {message.attachments.length > 0 && (
           <View style={{ paddingHorizontal: 16 }}>
@@ -218,11 +252,7 @@ const NewsItem = ({route, navigation, isED}) => {
                   chevron={false}
                   onPress={() => Linking.openURL(attachment.url)}
                   icon={
-                    typeof attachment.type === "file" ? (
-                      <FileIcon />
-                    ) : (
-                      <Link />
-                    )
+                    typeof attachment.type === "file" ? <FileIcon /> : <Link />
                   }
                 >
                   <NativeText variant="title" numberOfLines={1}>
