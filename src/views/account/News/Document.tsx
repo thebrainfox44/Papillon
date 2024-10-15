@@ -24,8 +24,9 @@ import PapillonPicker from "@/components/Global/PapillonPicker";
 import PapillonCheckbox from "@/components/Global/PapillonCheckbox";
 import { newsInformationAcknowledge } from "pawnote";
 import parse_initials from "@/utils/format/format_pronote_initials";
+import { selectColorSeed } from "@/utils/format/select_color_seed";
 
-const NewsItem = ({ route, navigation }) => {
+const NewsItem = ({route, navigation, isED}) => {
   const [message, setMessage] = useState<Information>(route.params.message && JSON.parse(route.params.message) as Information);
   const important = route.params.important;
   const account = useCurrentAccount((store) => store.account!);
@@ -68,38 +69,44 @@ const NewsItem = ({ route, navigation }) => {
 
   return (
     <View style={{ flex: 1 }}>
-      <PapillonModernHeader outsideNav={true}>
-        <View style={{ flexDirection: "row", gap: 10, alignItems: "center" }}>
+      <PapillonModernHeader native height={110} outsideNav={true}>
+        <View style={{ flexDirection: "row", gap: 12, alignItems: "center" }}>
           <InitialIndicator
             initial={parse_initials(message.author)}
-            color={theme.colors.primary}
+            color={selectColorSeed(message.author)}
           />
-          <View style={{ flex: 1 }}>
-            <NativeText variant="title" numberOfLines={1}>{message.title}</NativeText>
-            <NativeText variant="subtitle" numberOfLines={1}>{message.author}</NativeText>
+          <View style={{flex: 1, gap: 3}}>
+            <NativeText variant="title" numberOfLines={1}>{message.title === "" ? message.author : message.title}</NativeText>
+            <NativeText variant="subtitle" numberOfLines={1}>{message.title === "" ? formatDate(message.date) : message.author}</NativeText>
+          <View style={{ flex: 1, gap: 3 }}>
+            <NativeText variant="title" numberOfLines={1}>{message.title === "" ? message.author : message.title}</NativeText>
+            <NativeText variant="subtitle" numberOfLines={1}>{message.title === "" ? formatDate(message.date) : message.author}</NativeText>
           </View>
-          <PapillonPicker
-            animated
-            direction="right"
-            delay={0}
-            data={[
-              {
-                icon: message.read ? <EyeOff /> : <Eye />,
-                label: message.read ? "Marquer comme non lu" : "Marquer comme lu",
-                onPress: () => {
-                  setNewsRead(account, message, !message.read);
-                  setMessage((prev) => ({
-                    ...prev,
-                    read: !prev.read,
-                  }));
+          {isED && (
+            <PapillonPicker
+              animated
+              direction="right"
+              delay={0}
+              data={[
+                {
+                  icon: message.read ? <EyeOff /> : <Eye />,
+                  label: message.read ? "Marquer comme non lu" : "Marquer comme lu",
+                  onPress: () => {
+                    setNewsRead(account, message, !message.read);
+                    setMessage((prev) => ({
+                      ...prev,
+                      read: !prev.read,
+                    }));
+                  }
                 }
-              }
-            ]}
-          >
-            <TouchableOpacity>
-              <MoreHorizontal size={24} color={theme.colors.text} />
-            </TouchableOpacity>
-          </PapillonPicker>
+              ]}
+            >
+              <TouchableOpacity>
+                <MoreHorizontal size={24} color={theme.colors.text} />
+              </TouchableOpacity>
+            </PapillonPicker>
+            )}
+          </View>
         </View>
       </PapillonModernHeader>
       {important && (
@@ -178,7 +185,7 @@ const NewsItem = ({ route, navigation }) => {
           />
         </View>
 
-        <ScrollView horizontal={true} contentContainerStyle={{ gap: 5, paddingHorizontal: 16 }}>
+        {isED && <ScrollView horizontal={true} contentContainerStyle={{ gap: 5, paddingHorizontal: 16 }}>
           <View style={{
             padding: 4,
             paddingHorizontal: 12,
@@ -199,7 +206,7 @@ const NewsItem = ({ route, navigation }) => {
           }}>
             <NativeText>{formatDate(message.date)}</NativeText>
           </View>
-        </ScrollView>
+        </ScrollView>}
 
         {message.attachments.length > 0 && (
           <View style={{ paddingHorizontal: 16 }}>
