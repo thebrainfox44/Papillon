@@ -67,6 +67,10 @@ const RestaurantQrCode: Screen<"RestaurantQrCode"> = ({ route, navigation }) => 
     const subscription = DeviceMotion.addListener(({ rotation }) => {
       let newState: "neutral" | "tiltedUp" | "tiltedDown" = "neutral";
 
+      if (!rotation || typeof rotation.beta === "undefined") {
+        return;
+      }
+
       if (rotation.beta < BETA_THRESHOLD_LOW) {
         newState = "tiltedDown";
       } else if (rotation.beta > BETA_THRESHOLD_HIGH) {
