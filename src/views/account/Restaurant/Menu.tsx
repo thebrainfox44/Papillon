@@ -76,7 +76,6 @@ const Menu: Screen<"Menu"> = ({
   const [currentMenu, setCurrentMenu] = useState<PawnoteMenu | null>(null);
 
   const [currentWeek, setCurrentWeek] = useState<number>(0);
-  const [isDateBooked, setIsDateBooked] = useState<boolean>(false);
 
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [pickerDate, setPickerDate] = React.useState(new Date(today));
@@ -152,23 +151,40 @@ const Menu: Screen<"Menu"> = ({
   };
 
   const handleBookTogglePress = async (terminal: BookingTerminal, bookingDay: BookingDay) => {
-    setIsDateBooked(!isDateBooked);
+    const newBookingStatus = !bookingDay.booked;
+
+    const updatedBookings = allBookings?.map((term) =>
+      term === terminal
+        ? {
+          ...term,
+          days: term.days.map((day) =>
+            day === bookingDay ? { ...day, booked: newBookingStatus } : day
+          ),
+        }
+        : term
+    );
+
+    setAllBookings(updatedBookings ?? null);
+
     try {
-      await bookDayFromExternal(terminal.account, bookingDay.id, pickerDate, !isDateBooked);
-      const newBalances: Balance[] | null = allBalances
-        ? allBalances.map((balance) => {
-          if (balance.remaining > 0) {
-            return { ...balance, remaining: balance.remaining - 1 };
+      await bookDayFromExternal(terminal.account, bookingDay.id, pickerDate, newBookingStatus);
+    } catch {
+      const revertedBookings = allBookings?.map((term) =>
+        term === terminal
+          ? {
+            ...term,
+            days: term.days.map((day) =>
+              day === bookingDay ? { ...day, booked: !newBookingStatus } : day
+            ),
           }
-          return balance;
-        })
-        : null;
-      setAllBalances(newBalances);
-    } catch (error) {
+          : term
+      );
+
+      setAllBookings(revertedBookings ?? null);
       Alert.alert("Erreur", "Une erreur est survenue lors de la réservation du repas");
-      setIsDateBooked(isDateBooked);
     }
   };
+
 
   return (
     <ScrollView contentContainerStyle={styles.scrollViewContent}>
@@ -293,7 +309,7 @@ const Menu: Screen<"Menu"> = ({
                           key={dayIndex}
                           trailing={
                             <Switch
-                              value={isDateBooked}
+                              value={bookingDay.booked}
                               disabled={!bookingDay.canBook || (allBalances?.every((balance) => balance.remaining === 0) ?? false)}
                               onValueChange={() => handleBookTogglePress(terminal, bookingDay)}
                             />
