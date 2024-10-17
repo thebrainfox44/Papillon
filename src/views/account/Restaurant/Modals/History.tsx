@@ -1,11 +1,8 @@
 import MissingItem from "@/components/Global/MissingItem";
 import { NativeItem, NativeList, NativeListHeader, NativeText } from "@/components/Global/NativeComponents";
-import { reservationHistoryFromExternal } from "@/services/reservation-history";
 import { ReservationHistory } from "@/services/shared/ReservationHistory";
-import { useAccounts, useCurrentAccount } from "@/stores/account";
-import type { ExternalAccount } from "@/stores/account/types";
 import { animPapillon } from "@/utils/ui/animations";
-import { Fragment, useEffect, useMemo, useState } from "react";
+import { Fragment, useMemo } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 import { FadeInDown, FadeOut } from "react-native-reanimated";
 import { RouteParameters } from "../../../../router/helpers/types";
@@ -14,15 +11,6 @@ import { RouteProp } from "@react-navigation/native";
 type NavigationProps = RouteProp<RouteParameters, "RestaurantHistory">;
 
 const RestaurantHistory = ({ route }: { route: NavigationProps }) => {
-  const accounts = useAccounts((state) => state.accounts);
-  const account = useCurrentAccount(store => store.account);
-
-  const linkedAccounts = useMemo(() => {
-    return account?.linkedExternalLocalIDs.map((linkedID) => {
-      return accounts.find((acc) => acc.localID === linkedID);
-    }).filter(Boolean) as ExternalAccount[] ?? [];
-  }, [account?.linkedExternalLocalIDs, accounts]);
-
   const histories = route.params?.histories ?? [];
 
   const formatDate = (timestamp: number) => {
