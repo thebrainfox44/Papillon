@@ -96,7 +96,7 @@ const NewsItem = ({ route, navigation, isED }) => {
               {message.title === "" ? formatDate(message.date) : message.author}
             </NativeText>
           </View>
-          {isED && (
+          {!isED && (
             <PapillonPicker
               animated
               direction="right"
