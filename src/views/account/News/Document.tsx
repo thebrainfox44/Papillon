@@ -70,7 +70,7 @@ const NewsItem = ({ route, navigation, isED }) => {
     },
   };
 
-  function onPress (event, href) {
+  function onPress (_event, href) {
     Linking.openURL(href);
   }
 
