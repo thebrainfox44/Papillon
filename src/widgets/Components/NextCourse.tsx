@@ -70,7 +70,7 @@ const NextCourseWidget = forwardRef(({ hidden, setHidden, loading, setLoading }:
       setLoading(false);
     }();
   }, [account.instance, timetables]);
-  
+
   useEffect(() => {
     setLoading(true);
     updateNextCourse();
@@ -146,12 +146,12 @@ const NextCourseLesson: React.FC<{
       nextMinute.setMilliseconds(0);
       nextMinute.setMinutes(nextMinute.getMinutes() + 1);
       const delay = nextMinute.getTime() - now;
-      setTimeout(updateRemainingTime, delay);
+      return setTimeout(updateRemainingTime, delay);
     };
 
-    updateRemainingTime();
+    const timeout = updateRemainingTime();
 
-    return () => clearTimeout(updateRemainingTime);
+    return () => clearTimeout(timeout);
   }, [nextCourse, setWidgetTitle]);
 
   return (
