@@ -17,7 +17,7 @@ import {
   MoreHorizontal,
 } from "lucide-react-native";
 import React, { useEffect, useLayoutEffect, useState } from "react";
-import {View, Dimensions, Linking, TouchableOpacity, type GestureResponderEvent} from "react-native";
+import {View, Dimensions, Linking, TouchableOpacity, type GestureResponderEvent, Text} from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import RenderHtml from "react-native-render-html";
 import { PapillonModernHeader } from "@/components/Global/PapillonModernHeader";
@@ -31,6 +31,7 @@ import PapillonCheckbox from "@/components/Global/PapillonCheckbox";
 import { newsInformationAcknowledge } from "pawnote";
 import parse_initials from "@/utils/format/format_pronote_initials";
 import { selectColorSeed } from "@/utils/format/select_color_seed";
+import { AccountService } from "@/stores/account/types";
 
 const NewsItem: Screen<"NewsItem"> = ({ route, navigation }) => {
   const [message, setMessage] = useState<Information>(JSON.parse(route.params.message) as Information);
@@ -147,7 +148,7 @@ const NewsItem: Screen<"NewsItem"> = ({ route, navigation }) => {
             paddingHorizontal: 16,
           }}
         >
-          {message.ref.needToAcknowledge && (
+          {account.service === AccountService.Pronote && message.ref.needToAcknowledge && (
             <View
               style={{
                 flexDirection: "row",
@@ -159,9 +160,9 @@ const NewsItem: Screen<"NewsItem"> = ({ route, navigation }) => {
               <PapillonCheckbox
                 checked={message.acknowledged}
                 onPress={async () => {
-                  if (!message.acknowledged) {
+                  if (!message.acknowledged && account.instance) {
                     await newsInformationAcknowledge(
-                      account.instance!,
+                      account.instance,
                       message.ref
                     );
 
