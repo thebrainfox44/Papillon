@@ -10,7 +10,7 @@ import Reanimated, {
 import {Gift, WifiOff} from "lucide-react-native";
 import {useTheme} from "@react-navigation/native";
 import PackageJSON from "../../../../package.json";
-import {View} from "react-native";
+import {Dimensions, View} from "react-native";
 import NetInfo from "@react-native-community/netinfo";
 
 import {getErrorTitle} from "@/utils/format/get_papillon_error_title";
@@ -132,7 +132,11 @@ const ModalContent = ({ navigation, refresh, endRefresh }) => {
   }, []);
 
   return (
-    <View>
+    <View
+      style={{
+        minHeight: Dimensions.get("window").height - 131,
+      }}
+    >
       {(defined("force_changelog") || updatedRecently) && (
         <NativeList
           animated
