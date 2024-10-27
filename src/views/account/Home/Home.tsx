@@ -39,6 +39,7 @@ import {useIsFocused, useTheme} from "@react-navigation/native";
 import React, {useCallback, useMemo, useState} from "react";
 import {
   Dimensions,
+  Platform,
   RefreshControl,
   StatusBar,
   View
@@ -244,8 +245,7 @@ const Home: Screen<"HomeScreen"> = ({ navigation }) => {
         disableIntervalMomentum={true}
         style={scrollViewAnimatedStyle}
         snapToOffsets={[0, 265 + insets.top]}
-        decelerationRate={modalFull ? "normal" : 0}
-        scrollEventThrottle={16}
+        decelerationRate={modalFull || Platform.OS === "android" ? "normal" : 0}
         onScrollEndDrag={(e) => {
           if (e.nativeEvent.contentOffset.y < 265 + insets.top && modalOpen) {
             scrollRef.current?.scrollTo({ y: 0, animated: true });
