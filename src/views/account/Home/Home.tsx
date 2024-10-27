@@ -71,7 +71,10 @@ const Home: Screen<"HomeScreen"> = ({ navigation }) => {
   let account = useCurrentAccount(store => store.account!);
 
   const [shouldOpenContextMenu, setShouldOpenContextMenu] = useState(false);
+
   const [modalOpen, setModalOpen] = useState(false);
+  const [modalFull, setModalFull] = useState(false);
+
   const [canHaptics, setCanHaptics] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
 
@@ -108,14 +111,14 @@ const Home: Screen<"HomeScreen"> = ({ navigation }) => {
     borderCurve: "continuous",
     borderTopLeftRadius: interpolate(
       scrollOffset.value,
-      [0, 265 + insets.top - 1, 265 + insets.top],
-      [12, corners, 0],
+      [0, 100, 265 + insets.top - 1, 265 + insets.top],
+      [12, 12, corners, 0],
       Extrapolation.CLAMP
     ),
     borderTopRightRadius: interpolate(
       scrollOffset.value,
-      [0, 265 + insets.top - 1, 265 + insets.top],
-      [12, corners, 0],
+      [0, 100, 265 + insets.top - 1, 265 + insets.top],
+      [12, 12, corners, 0],
       Extrapolation.CLAMP
     ),
 
@@ -241,7 +244,7 @@ const Home: Screen<"HomeScreen"> = ({ navigation }) => {
         disableIntervalMomentum={true}
         style={scrollViewAnimatedStyle}
         snapToOffsets={[0, 265 + insets.top]}
-        decelerationRate={modalOpen ? "normal" : 0}
+        decelerationRate={modalFull ? "normal" : 0}
         scrollEventThrottle={16}
         onScrollEndDrag={(e) => {
           if (e.nativeEvent.contentOffset.y < 265 + insets.top && modalOpen) {
@@ -257,6 +260,7 @@ const Home: Screen<"HomeScreen"> = ({ navigation }) => {
           }
 
           setModalOpen(e.nativeEvent.contentOffset.y >= 195 + insets.top);
+          setModalFull(e.nativeEvent.contentOffset.y >= 265 + insets.top);
         }}
         refreshControl={<RefreshControl
           refreshing={refreshing}

@@ -17,6 +17,8 @@ import { animPapillon } from "@/utils/ui/animations";
 import Animated from "react-native-reanimated";
 import { BlurView } from "expo-blur";
 
+const ReanimatedBlurView = Reanimated.createAnimatedComponent(BlurView);
+
 const AccountSwitcher: React.FC<{
   small?: boolean,
   opened?: boolean,
@@ -81,8 +83,9 @@ const AccountSwitcher: React.FC<{
         overflow: "hidden",
         alignSelf: "flex-start",
       }}
+      layout={animPapillon(LinearTransition)}
     >
-      <BlurView
+      <ReanimatedBlurView
         tint={theme.dark ? "dark" : "light"}
         experimentalBlurMethod="dimezisBlurView"
         style={{
@@ -90,6 +93,7 @@ const AccountSwitcher: React.FC<{
           paddingVertical: 0,
           alignSelf: "flex-start",
         }}
+        layout={animPapillon(LinearTransition)}
       >
         <Reanimated.View
           layout={animPapillon(LinearTransition)}
@@ -180,7 +184,7 @@ const AccountSwitcher: React.FC<{
             </Reanimated.View>
           </Reanimated.View>
         </Reanimated.View>
-      </BlurView>
+      </ReanimatedBlurView>
     </Reanimated.View>
   );
 };
