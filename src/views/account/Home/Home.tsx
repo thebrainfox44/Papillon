@@ -35,11 +35,13 @@ import {protectScreenComponent} from "@/router/helpers/protected-screen";
 import type {Screen} from "@/router/helpers/types";
 import {useCurrentAccount} from "@/stores/account";
 import getCorners from "@/utils/ui/corner-radius";
-import {useTheme} from "@react-navigation/native";
+import {useIsFocused, useTheme} from "@react-navigation/native";
 import React, {useCallback, useMemo, useState} from "react";
 import {
   Dimensions,
+  Platform,
   RefreshControl,
+  StatusBar,
   View
 } from "react-native";
 import Reanimated from "react-native-reanimated";
@@ -62,6 +64,7 @@ const Home: Screen<"HomeScreen"> = ({ navigation }) => {
   const { colors } = useTheme();
   const insets = useSafeAreaInsets();
   const corners = useMemo(() => getCorners(), []);
+  const focused = useIsFocused();
 
   let scrollRef = useAnimatedRef();
   let scrollOffset = useScrollViewOffset(scrollRef);
@@ -69,7 +72,10 @@ const Home: Screen<"HomeScreen"> = ({ navigation }) => {
   let account = useCurrentAccount(store => store.account!);
 
   const [shouldOpenContextMenu, setShouldOpenContextMenu] = useState(false);
+
   const [modalOpen, setModalOpen] = useState(false);
+  const [modalFull, setModalFull] = useState(false);
+
   const [canHaptics, setCanHaptics] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
 
@@ -106,14 +112,14 @@ const Home: Screen<"HomeScreen"> = ({ navigation }) => {
     borderCurve: "continuous",
     borderTopLeftRadius: interpolate(
       scrollOffset.value,
-      [0, 265 + insets.top],
-      [20, corners],
+      [0, 100, 265 + insets.top - 1, 265 + insets.top],
+      [12, 12, corners, 0],
       Extrapolation.CLAMP
     ),
     borderTopRightRadius: interpolate(
       scrollOffset.value,
-      [0, 265 + insets.top],
-      [20, corners],
+      [0, 100, 265 + insets.top - 1, 265 + insets.top],
+      [12, 12, corners, 0],
       Extrapolation.CLAMP
     ),
 
@@ -130,10 +136,10 @@ const Home: Screen<"HomeScreen"> = ({ navigation }) => {
     backgroundColor: colors.card,
     overflow: "hidden",
     transform: [
-      { scaleX: interpolate(
+      {scale: interpolate(
         scrollOffset.value,
-        [0, 125, 265],
-        [1, 0.95, 1],
+        [0, 100, 200, 260 + insets.top],
+        [1, 0.95, 0.95, 1],
         Extrapolation.CLAMP
       )},
       {translateY: interpolate(
@@ -147,7 +153,7 @@ const Home: Screen<"HomeScreen"> = ({ navigation }) => {
 
   const navigationBarAnimatedStyle = useAnimatedStyle(() => ({
     position: "absolute",
-    top: scrollOffset.value - 265 - insets.top,
+    top: scrollOffset.value - 270 - insets.top,
     left: 0,
     right: 0,
     height: interpolate(
@@ -214,6 +220,9 @@ const Home: Screen<"HomeScreen"> = ({ navigation }) => {
 
   return (
     <View style={{flex: 1}}>
+      {!modalOpen && focused && (
+        <StatusBar barStyle="light-content" />
+      )}
       <ContextMenu
         style={[{
           position: "absolute",
@@ -225,6 +234,7 @@ const Home: Screen<"HomeScreen"> = ({ navigation }) => {
       >
         <AccountSwitcher
           translationY={scrollOffset}
+          modalOpen={modalOpen}
           loading={!account.instance}
         />
       </ContextMenu>
@@ -235,7 +245,7 @@ const Home: Screen<"HomeScreen"> = ({ navigation }) => {
         disableIntervalMomentum={true}
         style={scrollViewAnimatedStyle}
         snapToOffsets={[0, 265 + insets.top]}
-        decelerationRate={modalOpen ? "normal" : 0}
+        decelerationRate={modalFull || Platform.OS === "android" ? "normal" : 0}
         onScrollEndDrag={(e) => {
           if (e.nativeEvent.contentOffset.y < 265 + insets.top && modalOpen) {
             scrollRef.current?.scrollTo({ y: 0, animated: true });
@@ -248,9 +258,9 @@ const Home: Screen<"HomeScreen"> = ({ navigation }) => {
           } else if (e.nativeEvent.contentOffset.y < 125 && !canHaptics) {
             setCanHaptics(true);
           }
-        }}
-        onMomentumScrollEnd={(e) => {
-          setModalOpen(e.nativeEvent.contentOffset.y >= 265 + insets.top);
+
+          setModalOpen(e.nativeEvent.contentOffset.y >= 195 + insets.top);
+          setModalFull(e.nativeEvent.contentOffset.y >= 265 + insets.top);
         }}
         refreshControl={<RefreshControl
           refreshing={refreshing}
@@ -270,9 +280,6 @@ const Home: Screen<"HomeScreen"> = ({ navigation }) => {
         </Animated.View>
 
         <Animated.View style={modalAnimatedStyle}>
-          <Animated.View
-            style={navigationBarAnimatedStyle}
-          />
           <Animated.View
             style={modalIndicatorAnimatedStyle}
           />
