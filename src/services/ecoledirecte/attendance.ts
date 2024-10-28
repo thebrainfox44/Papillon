@@ -38,7 +38,6 @@ const decodeAbsence = (item: AttendanceItem): Absence => {
 
 
 const decodePunishment = (item: AttendanceItem): Punishment => {
-  console.log(item);
   const timeInterval = dateStringAsTimeInterval(item.displayDate);
   const duration = (timeInterval?.end && timeInterval.start) ? getDuration(timeInterval) .getTime() / (60 * 1000): 0;
   return {
