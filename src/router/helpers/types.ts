@@ -28,22 +28,22 @@ export type RouteParameters = {
   PronoteGeolocation: undefined;
   PronoteManualLocation: undefined;
   PronoteInstanceSelector: CurrentPosition;
-  PronoteCredentials: { instanceURL: string, information: pronote.Instance };
+  PronoteCredentials: { instanceURL: string; information: pronote.Instance };
   PronoteManualURL?: { url?: string; method?: string };
   PronoteQRCode: undefined;
   PronoteWebview: { instanceURL: string };
   PronoteV6Import: {
     data: {
-      username: string
-      deviceUUID: string
-      instanceUrl: string
-      nextTimeToken: string
-    }
+      username: string;
+      deviceUUID: string;
+      instanceUrl: string;
+      nextTimeToken: string;
+    };
   };
   Pronote2FA_Auth: {
-    session: pronote.SessionHandle,
-    error: pronote.SecurityError,
-    accountID: string
+    session: pronote.SessionHandle;
+    error: pronote.SecurityError;
+    accountID: string;
   };
 
   // login.ecoledirecte
@@ -53,6 +53,7 @@ export type RouteParameters = {
   IdentityProviderSelector: undefined;
   UnivRennes1_Login: undefined;
   UnivRennes2_Login: undefined;
+  UnivIUTLannion_Login: undefined;
   UnivLimoges_Login: undefined;
   UnivSorbonneParisNord_login: undefined;
   UnivUphf_Login: undefined;
@@ -63,7 +64,7 @@ export type RouteParameters = {
   SkolengoInstanceSelector: { pos: CurrentPosition | null };
   SkolengoWebview: { school: SkolengoSchool };
   // account.index
-  Home: undefined
+  Home: undefined;
   HomeScreen?: { onboard: boolean };
   NoteReaction: undefined;
 
@@ -78,14 +79,14 @@ export type RouteParameters = {
   Homeworks?: { outsideNav?: boolean };
   HomeworksDocument: { homework: Homework };
 
-  News?: { outsideNav?: boolean, isED: boolean };
-  NewsItem: { message: string, important: boolean, isED: boolean };
+  News?: { outsideNav?: boolean; isED: boolean };
+  NewsItem: { message: string; important: boolean; isED: boolean };
 
   Grades?: { outsideNav?: boolean };
-  GradeSubject: { subject: GradesPerSubject, allGrades: Grade[] };
+  GradeSubject: { subject: GradesPerSubject; allGrades: Grade[] };
   GradeDocument: {
-    grade: Grade,
-    allGrades?: Grade[]
+    grade: Grade;
+    allGrades?: Grade[];
   };
 
   Attendance: undefined;
@@ -96,7 +97,7 @@ export type RouteParameters = {
   // settings.index
   SettingStack: any;
   Settings?: {
-    view: keyof RouteParameters
+    view: keyof RouteParameters;
   };
   SettingsNotifications: undefined;
   SettingsTrophies: undefined;
@@ -108,7 +109,7 @@ export type RouteParameters = {
   SettingsExternalServices: undefined;
   SettingsMagic: undefined;
   SettingsFlags: undefined;
-  SettingsFlagsInfos: { title: string, value: any };
+  SettingsFlagsInfos: { title: string; value: any };
   SettingsAddons: undefined;
   SettingsDevLogs: undefined;
   SettingsDonorsList: undefined;
@@ -122,28 +123,28 @@ export type RouteParameters = {
   Chat: { handle: Chat };
 
   AccountStack: { onboard: boolean };
-  ExternalAccountSelectMethod: { service: AccountService | "Other" }
+  ExternalAccountSelectMethod: { service: AccountService | "Other" };
   ExternalAccountSelector: undefined;
-  ExternalTurboselfLogin: undefined
-  ExternalArdLogin: undefined
-  QrcodeAnswer: { accountID: string }
-  QrcodeScanner: { accountID: string }
-  PriceDetectionOnboarding: { accountID: string }
-  PriceBeforeScan: { accountID: string }
-  PriceAfterScan: { accountID: string }
+  ExternalTurboselfLogin: undefined;
+  ExternalArdLogin: undefined;
+  QrcodeAnswer: { accountID: string };
+  QrcodeScanner: { accountID: string };
+  PriceDetectionOnboarding: { accountID: string };
+  PriceBeforeScan: { accountID: string };
+  PriceAfterScan: { accountID: string };
 
   AddonSettingsPage: {
-    addon: AddonPlacementManifest
-    from: keyof RouteParameters
+    addon: AddonPlacementManifest;
+    from: keyof RouteParameters;
   };
   AddonLogs: {
-    logs: AddonLog[],
-    name: string
+    logs: AddonLog[];
+    name: string;
   };
   AddonPage: {
-    addon: AddonPlacementManifest
-    from: string
-    data: any
+    addon: AddonPlacementManifest;
+    from: string;
+    data: any;
   };
 };
 

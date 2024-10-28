@@ -33,6 +33,13 @@ const IdentityProviderSelector: Screen<"IdentityProviderSelector"> = ({ navigati
       navigate: () => navigation.navigate("UnivRennes2_Login"),
     },
     {
+      name: "iut_lannion",
+      title: "IUT de Lannion",
+      description: "Utilisez votre compte Université Rennes 1 pour vous connecter",
+      image: require("@/../assets/images/service_iutlan.png"),
+      navigate: () => navigation.navigate("UnivIUTLannion_Login"),
+    },
+    {
       name: "univ_limoges",
       title: "Université de Limoges",
       description: "Utilisez votre compte Biome pour vous connecter",
