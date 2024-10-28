@@ -1,7 +1,7 @@
 import LoginView from "@/components/Templates/LoginView";
 import React, { useMemo, useState } from "react";
 import { View } from "react-native";
-import { getStudentData } from "@/services/iutlan/fetch_iutlan";
+import getStudentData from "@/services/iutlan/fetch_iutlan";
 
 export const UnivIUTLannion_Login: React.FC = () => {
   const [loading, setLoading] = useState(false);

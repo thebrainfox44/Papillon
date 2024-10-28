@@ -1,6 +1,6 @@
 import axios from "axios";
-import * as zlib from "pako";
-import { Buffer } from "buffer";
+import qs from "qs";
+import pako from "pako";
 
 class StudentDataFetcher {
   constructor () {
@@ -10,134 +10,216 @@ class StudentDataFetcher {
   }
 
   async login (username, password) {
-    // Step 1: Fetch login page to get execution token
-    const serviceUrl = `${
-      this.baseUrl
-    }/services/doAuth.php?href=${encodeURIComponent(this.baseUrl)}`;
-    const loginPageResponse = await this.makeRequest(
-      `${this.casUrl}/login?service=${encodeURIComponent(serviceUrl)}`,
-      "GET"
-    );
+    console.log("Starting login process...");
 
-    const executionMatch = loginPageResponse.body.match(
+    // Step 1: Initial request to the login page
+    const serviceUrl = `${this.baseUrl}/services/doAuth.php?href=https%3A%2F%2F${this.baseUrl}%2F`;
+    console.log("Requesting login page...");
+    const loginPageRes = await this.makeRequest({
+      url: `${this.casUrl}/login?service=${encodeURIComponent(serviceUrl)}`,
+      method: "GET",
+    });
+    console.log("Login page response:", loginPageRes.data);
+
+    // Step 2: Extract execution token
+    const executionMatch = loginPageRes.data.match(
       /name="execution" value="([^"]+)"/
     );
-    if (!executionMatch) throw new Error("Execution token not found");
+    if (!executionMatch) {
+      throw new Error("Could not find execution token");
+    }
+    console.log("Execution token found:", executionMatch[1]);
 
-    // Step 2: Submit login form with token
-    const loginData = new URLSearchParams({
+    // Step 3: Submit login form
+    const loginFormData = qs.stringify({
       username,
       password,
       execution: executionMatch[1],
       _eventId: "submit",
       geolocation: "",
     });
-
-    const loginResponse = await this.makeRequest(
-      `${this.casUrl}/login?service=${encodeURIComponent(serviceUrl)}`,
-      "POST",
+    console.log("Submitting login form...");
+    const loginRes = await this.makeRequest(
       {
-        "Content-Type": "application/x-www-form-urlencoded",
-        Origin: this.casUrl,
-        Referer: `${this.casUrl}/login?service=${encodeURIComponent(
-          serviceUrl
-        )}`,
+        url: `${this.casUrl}/login?service=${encodeURIComponent(serviceUrl)}`,
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+          Origin: this.casUrl,
+          Referer: `${this.casUrl}/login?service=${encodeURIComponent(
+            serviceUrl
+          )}`,
+        },
       },
-      loginData.toString()
+      loginFormData
     );
+    console.log("Login form response:", loginRes.data);
 
-    // Follow CAS redirects if present
-    if (loginResponse.status === 302 && loginResponse.headers["location"]) {
-      await this.followRedirect(loginResponse.headers["location"]);
+    // Step 4: Handle CAS redirect
+    if (loginRes.status === 302 && loginRes.headers.location) {
+      const ticketUrl = loginRes.headers.location;
+      console.log("Handling CAS redirect to:", ticketUrl);
+      const ticketRes = await this.makeRequest({
+        url: `${this.baseUrl}${new URL(ticketUrl).pathname}${
+          new URL(ticketUrl).search
+        }`,
+        method: "GET",
+        headers: {
+          Referer: this.casUrl,
+        },
+      });
+      console.log("Ticket response:", ticketRes.data);
+
+      // Step 5: Handle service redirect
+      if (ticketRes.status === 302 && ticketRes.headers.location) {
+        const authRes = await this.makeRequest({
+          url: `${this.baseUrl}${ticketRes.headers.location}`,
+          method: "GET",
+          headers: {
+            Referer: this.casUrl,
+          },
+        });
+        console.log("Auth response:", authRes.data);
+
+        // Step 6: Final redirect to home page
+        if (authRes.status === 302 && authRes.headers.location) {
+          console.log("Final redirect to home page...");
+          await this.makeRequest({
+            url: `${this.baseUrl}${authRes.headers.location}`,
+            method: "GET",
+            headers: {
+              Referer: this.casUrl,
+            },
+          });
+        }
+      }
     }
 
-    // Fetch data if login was successful
+    // Step 7: Finally, fetch the student data
+    console.log("Fetching student data...");
     return this.fetchStudentData();
   }
 
   async fetchStudentData () {
-    // Make sure the user is logged in and cookies are set before fetching data
-    const response = await this.makeRequest(
-      `${this.baseUrl}/services/data.php?q=dataPremièreConnexion`,
-      "POST",
-      {
+    const dataRes = await this.makeRequest({
+      url: `${this.baseUrl}/services/data.php?q=dataPremi%C3%A8reConnexion`,
+      method: "POST",
+      headers: {
         Accept: "*/*",
+        "Accept-Language": "fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3",
+        "Accept-Encoding": "gzip, deflate, br, zstd",
         "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
         "X-Requested-With": "XMLHttpRequest",
         Origin: this.baseUrl,
-        Referer: `${this.baseUrl}/`,
-      }
-    );
-
-    const decodedData = zlib.inflate(new Uint8Array(response.data), {
-      to: "string",
+        Referer: this.baseUrl,
+        "Sec-Fetch-Dest": "empty",
+        "Sec-Fetch-Mode": "cors",
+        "Sec-Fetch-Site": "same-origin",
+        TE: "trailers",
+        Priority: "u=4",
+      },
     });
-    const data = JSON.parse(decodedData);
+    console.log("Student data response:", dataRes.data);
 
-    if (data.erreur) throw new Error(data.erreur);
+    const data = JSON.parse(dataRes.data);
+    if (data.erreur) {
+      throw new Error(data.erreur);
+    }
     return data;
   }
 
-  async makeRequest (url, method, headers = {}, data = null) {
+  async makeRequest (options, postData = null) {
+    const cookies = this.getCookieHeader(new URL(options.url).hostname);
     const defaultHeaders = {
-      "User-Agent": "Mozilla/5.0 (Mobile; rv:13.0) Gecko/20100101 Firefox/13.0",
-      Accept: "application/json, text/html, */*; q=0.1",
-      Cookie: this.getCookieHeader(new URL(url).hostname),
-      ...headers,
+      Host: new URL(options.url).hostname,
+      "User-Agent":
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:131.0) Gecko/20100101 Firefox/131.0",
+      Accept:
+        "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/png,image/svg+xml,*/*;q=0.8",
+      "Accept-Language": "fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3",
+      "Accept-Encoding": "gzip, deflate, br, zstd",
+      DNT: "1",
+      "Sec-GPC": "1",
+      Connection: "keep-alive",
+      "Upgrade-Insecure-Requests": "1",
+      "Sec-Fetch-Dest": "document",
+      "Sec-Fetch-Mode": "navigate",
+      "Sec-Fetch-Site": "same-origin",
+      "Sec-Fetch-User": "?1",
+      Priority: "u=0, i",
+      ...(cookies ? { Cookie: cookies } : {}),
     };
 
-    const response = await axios({
-      method,
-      url,
-      headers: defaultHeaders,
-      data,
+    const config = {
+      method: options.method,
+      url: options.url,
+      headers: { ...defaultHeaders, ...options.headers },
+      data: postData,
       responseType: "arraybuffer",
-      maxRedirects: 0, // Prevent automatic redirects, as we handle them manually
-      validateStatus: (status) => status < 500,
-    });
+    };
+
+    console.log("Making request to:", options.url);
+    const response = await axios(config);
+    console.log("Response received:", response.status);
 
     if (response.headers["set-cookie"]) {
-      this.storeCookies(new URL(url).hostname, response.headers["set-cookie"]);
+      this.storeCookies(
+        new URL(options.url).hostname,
+        response.headers["set-cookie"]
+      );
+    }
+
+    let decompressedData = response.data;
+    const contentEncoding = response.headers["content-encoding"];
+    console.log("Content-Encoding:", contentEncoding);
+
+    if (contentEncoding === "gzip") {
+      console.log("Decompressing gzip data...");
+      decompressedData = pako.ungzip(response.data, { to: "string" });
+    } else if (contentEncoding === "br") {
+      console.log("Decompressing brotli data...");
+      decompressedData = pako.inflate(response.data, { to: "string" });
+    } else {
+      decompressedData = response.data.toString();
     }
 
     return {
       status: response.status,
       headers: response.headers,
-      body: Buffer.from(response.data).toString("utf-8"),
+      data: decompressedData,
     };
   }
 
-  async followRedirect (url) {
-    // Handles redirect by following the location header to simulate CAS login
-    const response = await this.makeRequest(url, "GET", { Referer: url });
-    if (response.status === 302 && response.headers["location"]) {
-      return this.followRedirect(response.headers["location"]);
-    }
-    return response;
-  }
-
   storeCookies (domain, cookies) {
-    if (!this.cookies.has(domain)) this.cookies.set(domain, new Map());
-    const domainCookies = this.cookies.get(domain);
+    if (!this.cookies.has(domain)) {
+      this.cookies.set(domain, new Map());
+    }
 
+    const domainCookies = this.cookies.get(domain);
     cookies.forEach((cookie) => {
       const [keyValue, ...attributes] = cookie.split(";");
       const [key, value] = keyValue.split("=").map((s) => s.trim());
-      domainCookies.set(key, { value, attributes });
+
+      domainCookies.set(key, {
+        value,
+        attributes: attributes.map((attr) => attr.trim()),
+      });
     });
   }
 
   getCookieHeader (domain) {
     const domainCookies = this.cookies.get(domain);
     if (!domainCookies) return "";
+
     return Array.from(domainCookies.entries())
       .map(([key, { value }]) => `${key}=${value}`)
       .join("; ");
   }
 }
 
-export async function getStudentData (username, password) {
+async function getStudentData (username, password) {
   const fetcher = new StudentDataFetcher();
-  await fetcher.login(username, password);
-  return await fetcher.fetchStudentData();
+  return await fetcher.login(username, password);
 }
+
+export default getStudentData;
