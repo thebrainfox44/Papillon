@@ -38,25 +38,26 @@ const decodeAbsence = (item: AttendanceItem): Absence => {
 
 
 const decodePunishment = (item: AttendanceItem): Punishment => {
+  console.log(item);
   const timeInterval = dateStringAsTimeInterval(item.displayDate);
   const duration = (timeInterval?.end && timeInterval.start) ? getDuration(timeInterval) .getTime() / (60 * 1000): 0;
   return {
     id: item.id.toString(),
     duration,
     givenBy: item.teacher,
-    timestamp: item.date.getTime(),
+    timestamp: new Date(timeInterval?.start ?? item.date.getTime()).getTime(),
     // TODO
     duringLesson: false,
     exclusion: false,
     homework: {
       documents: [],
-      text: ""
+      text: item.todo
     },
     nature: "",
     reason: {
-      circumstances: item.reason,
+      circumstances: "",
       documents: [],
-      text: []
+      text: [item.reason]
     },
     schedulable: false,
     schedule: []
