@@ -1,7 +1,18 @@
 import type {EcoleDirecteAccount} from "@/stores/account/types";
 import {Timetable, TimetableClass, TimetableClassStatus} from "../shared/Timetable";
 import {ErrorServiceUnauthenticated} from "../shared/errors";
-import ecoledirecte, {TimetableItemKind} from "pawdirecte";
+import ecoledirecte from "pawdirecte";
+
+/* Not using the one from pawdirecte since it's only missing the `SANCTION` type, and it would require another pawdirecte update,
+so it is pointless imo to make an update for such a small change */
+const TimetableItemKind=  {
+  COURS: "COURS",
+  PERMANENCE: "PERMANENCE",
+  CONGE: "CONGE",
+  EVENEMENT: "EVENEMENT",
+  SANCTION: "SANCTION"
+};
+
 
 const decodeTimetableClass = (c: ecoledirecte.TimetableItem): TimetableClass => {
   const base = {
@@ -10,7 +21,7 @@ const decodeTimetableClass = (c: ecoledirecte.TimetableItem): TimetableClass => 
     additionalNotes: c.notes,
     backgroundColor: c.color
   };
-
+  console.log(c.kind);
   switch (c.kind) {
     case TimetableItemKind.COURS:
       return {
@@ -50,6 +61,15 @@ const decodeTimetableClass = (c: ecoledirecte.TimetableItem): TimetableClass => 
         id: c.id,
         title: "Congés",
         room: void 0,
+        ...base
+      };
+    case TimetableItemKind.SANCTION:
+      return {
+        type: "detention",
+        subject: "",
+        id: c.id,
+        title: "Sanction",
+        room: "PERMANENCE",
         ...base
       };
     default:
