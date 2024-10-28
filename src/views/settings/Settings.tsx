@@ -418,8 +418,7 @@ const Settings: Screen<"Settings"> = ({ route, navigation }) => {
             marginTop: 24,
           }}
         >
-          version {AppJSON.expo.version} {"\n"}
-          {Platform.OS} {Platform.Version} {"\n"}
+          version {AppJSON.expo.version} {Platform.OS} {"\n"}
           fabriqué avec ❤️ par les contributeurs Papillon
         </Text>
       </Reanimated.ScrollView>

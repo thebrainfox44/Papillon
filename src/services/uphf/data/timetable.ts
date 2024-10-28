@@ -28,9 +28,9 @@ export const getTimetableForWeek = async (account: UphfAccount, weekNumber: numb
       startDateTime: event.startDateTime,
       endDateTime: event.endDateTime,
       course: event.course,
-      rooms: event.rooms.length >= 1 ? event.rooms : [{id: null, label: null, type: null}],
-      teachers: event.teachers.length >= 1 ? event.teachers : [{id: null, displayname: null, email: null}],
-      group: event.groups.length >= 1 ? event.groups : [{id: null, label: null}],
+      rooms: event.rooms,
+      teachers: event.teachers,
+      groups: event.groups
     }))
   );
 
