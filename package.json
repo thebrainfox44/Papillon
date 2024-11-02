@@ -26,6 +26,7 @@
     "buffer": "^6.0.3",
     "cal-parser": "^1.0.2",
     "date-fns": "^3.6.0",
+    "esup-multi.js": "^1.0.1",
     "expo": "^51.0.36",
     "expo-asset": "^10.0.10",
     "expo-auth-session": "~5.5.2",
@@ -92,7 +93,6 @@
     "scolengo-api": "^3.0.5",
     "text-encoding": "^0.7.0",
     "turbawself": "^1.1.1",
-    "uphf-api": "^2.2.0",
     "zustand": "^4.5.2"
   },
   "devDependencies": {
