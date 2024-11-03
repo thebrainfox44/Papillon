@@ -39,7 +39,5 @@ export const getTimetableForWeek = async (account: MultiAccount, weekNumber: num
     }))
   );
 
-  console.log(eventsList.map(decodeTimetableClass));
-
   return await eventsList.map(decodeTimetableClass);
 };
