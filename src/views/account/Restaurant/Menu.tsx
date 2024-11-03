@@ -95,17 +95,34 @@ const Menu: Screen<"Menu"> = ({
         const dailyMenu = account ? await getMenu(account, pickerDate) : null;
 
         const accountPromises = linkedAccounts.map(async (account) => {
-          const [balance, history, cardnumber, booking] = await Promise.all([
-            balanceFromExternal(account),
-            reservationHistoryFromExternal(account),
-            qrcodeFromExternal(account),
-            getBookingsAvailableFromExternal(account, getWeekNumber(today)),
-          ]);
+          try {
+            const [balance, history, cardnumber, booking] = await Promise.all([
+              balanceFromExternal(account).catch(err => {
+                console.warn(`Error fetching balance for account ${account}:`, err);
+                return [];
+              }),
+              reservationHistoryFromExternal(account).catch(err => {
+                console.warn(`Error fetching history for account ${account}:`, err);
+                return [];
+              }),
+              qrcodeFromExternal(account).catch(err => {
+                console.warn(`Error fetching QR code for account ${account}:`, err);
+                return 0;
+              }),
+              getBookingsAvailableFromExternal(account, getWeekNumber(today)).catch(err => {
+                console.warn(`Error fetching bookings for account ${account}:`, err);
+                return [];
+              })
+            ]);
 
-          newBalances.push(...balance);
-          newHistories.push(...history);
-          newBookings.push(...booking);
-          if (cardnumber !== 0) newQRCodes.push(cardnumber);
+            newBalances.push(...balance);
+            newHistories.push(...history);
+            newBookings.push(...booking);
+            if (cardnumber !== 0) newQRCodes.push(cardnumber);
+
+          } catch (error) {
+            console.warn(`An error occurred with account ${account}:`, error);
+          }
         });
 
         await Promise.all(accountPromises);
@@ -117,10 +134,11 @@ const Menu: Screen<"Menu"> = ({
         setCurrentMenu(dailyMenu);
         setIsInitialised(true);
       } catch (error) {
-        console.error("An error occurred while fetching data:", error);
+        console.warn("An error occurred while fetching data:", error);
       }
     }();
   }, [linkedAccounts]);
+
 
   const getWeekNumber = (date: Date) => {
     const firstDayOfYear = new Date(date.getFullYear(), 0, 1);
