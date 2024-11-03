@@ -5,10 +5,11 @@ import UnivRennes1_Login from "@/views/login/IdentityProvider/providers/UnivRenn
 import UnivLimoges_Login from "@/views/login/IdentityProvider/providers/UnivLimoges";
 import UnivRennes2_Login from "@/views/login/IdentityProvider/providers/UnivRennes2";
 import UnivSorbonneParisNord_login from "@/views/login/IdentityProvider/providers/UnivSorbonneParisNord";
+import Muli_Login from "@/views/login/IdentityProvider/providers/Multi";
 
 export default [
   createScreen("IdentityProviderSelector", IdentityProviderSelector, {
-    headerTitle: "Fournisseur d'identité",
+    headerTitle: "Universités et autres",
     headerBackVisible: true
   }),
 
@@ -32,5 +33,9 @@ export default [
     headerTitle: "Université Sorbonne Paris Nord",
   }),
 
+  createScreen("Multi_Login", Muli_Login, {
+    headerBackVisible: true,
+    headerTitle: "ESUP Multi",
+  }),
 
 ] as const;

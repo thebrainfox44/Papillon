@@ -11,7 +11,7 @@
 
 > **Papillon est une application mobile qui vise à simplifier la vie scolaire des étudiants en France.**
 
-Voici un aperçu de ce que nous avons accompli jusqu'à présent et de ce qui reste à faire :
+Voici un aperçu de ce que nous avons accompli jusqu'à présent et de ce qu'il reste à faire :
 
 - 🏗️ Structure
   - 🗺️ Routage & Navigation (React Navigation)
@@ -21,8 +21,16 @@ Voici un aperçu de ce que nous avons accompli jusqu'à présent et de ce qui re
 - 🎓 Connexion à un service scolaire
   - 🏫 Interface de choix du service scolaire
     - [x] 🟢 Pronote
-    - [ ] 🔵 EcoleDirecte
-    - [ ] 🟡 Skolengo
+    - [x] 🔵 EcoleDirecte
+    - [x] 🟡 Skolengo
+    - [x] 🏫 Universités
+      - Limoges
+      - Lorraine
+      - Nîmes
+      - Polytechnique Hauts-de-France (UPHF)
+      - Rennes 1
+      - Rennes 2
+      - Sorbonne Paris Nord
   - 🏠 Interface de sélection de l'établissement
     - **Pour PRONOTE**
       - URL de l'établissement
@@ -46,6 +54,7 @@ Voici un aperçu de ce que nous avons accompli jusqu'à présent et de ce qui re
   - 📰 Actualités
   - 💬 Conversations
   - 🎒 Vie scolaire
+  - 📩 Messagerie
  
 #
  
@@ -53,4 +62,3 @@ Voici un aperçu de ce que nous avons accompli jusqu'à présent et de ce qui re
 ![A propos du projet](https://raw.githubusercontent.com/PapillonApp/Papillon/main/.github/assets/part_dev_dark.svg#gh-dark-mode-only)
 
 Pour commencer à développer sur Papillon v7, référez vous au [centre de documentation pour développeurs](https://developers.papillon.bzh/getting-started/quick-start).
-

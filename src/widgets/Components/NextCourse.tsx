@@ -65,13 +65,11 @@ const NextCourseWidget = forwardRef(({ hidden, setHidden, loading, setLoading }:
   }, [fetchTimetable]);
 
   useEffect(() => {
-    void async function () {
-      if (nextCourse) {
-        setNextCourse(nextCourse);
-        setHidden(false);
-      }
-      setLoading(false);
-    }();
+    if (nextCourse) {
+      setNextCourse(nextCourse);
+      setHidden(false);
+    }
+    setLoading(false);
   }, [account.instance, timetables]);
 
   useEffect(() => {

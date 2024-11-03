@@ -1,4 +1,4 @@
-import { type Account, AccountService } from "@/stores/account/types";
+import {type Account, AccountService} from "@/stores/account/types";
 import { Skolengo } from "scolengo-api";
 
 export interface Reconnected<T extends Account> {
@@ -36,6 +36,15 @@ export async function reload <T extends Account> (account: T): Promise<Reconnect
       const { reload } = await import("./skolengo/reload-skolengo");
       const res = await reload(account);
       return { instance: res.instance, authentication: res.authentication };
+    }
+    case AccountService.EcoleDirecte: {
+      const { reload } = await import("./ecoledirecte/reload");
+      const res = await reload(account);
+      return { instance: res.instance, authentication: res.authentication };
+    }
+    case AccountService.Multi: {
+      const { reloadInstance } = await import("./multi/reload-multi");
+      return await reloadInstance(account.authentication) as Reconnected<T>;
     }
     default: {
       console.warn("Service not implemented");

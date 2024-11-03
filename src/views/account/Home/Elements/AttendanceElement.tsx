@@ -5,7 +5,6 @@ import { useCurrentAccount } from "@/stores/account";
 import { useAttendanceStore } from "@/stores/attendance";
 import TotalMissed from "../../Attendance/Atoms/TotalMissed";
 import { PressableScale } from "react-native-pressable-scale";
-import { useTheme } from "@react-navigation/native";
 import RedirectButton from "@/components/Home/RedirectButton";
 import { PapillonNavigation } from "@/router/refs";
 import { log } from "@/utils/logger/logger";
@@ -17,13 +16,23 @@ interface Attendance {
   }[];
 }
 
-const AttendanceElement: React.FC = () => {
+const AttendanceElement: React.FC = ({onImportance}) => {
   const account = useCurrentAccount((store) => store.account);
   const defaultPeriod = useAttendanceStore((store) => store.defaultPeriod) as string | null;
   const attendances = useAttendanceStore((store) => store.attendances) as Record<string, Attendance> | null;
 
-  const theme = useTheme();
-  const { colors } = theme;
+  const ImportanceHandler = () => {
+    if (attendances && defaultPeriod) {
+      let totalMissed = formatTotalMissed(attendances[defaultPeriod]);
+      if (totalMissed.total.hours > 0 || totalMissed.total.minutes > 0) {
+        onImportance(3);
+      } else {
+        onImportance(0);
+      }
+    } else {
+      onImportance(0);
+    }
+  };
 
   useEffect(() => {
     void async function () {
@@ -31,6 +40,7 @@ const AttendanceElement: React.FC = () => {
       if (account?.instance) {
         await updateGradesPeriodsInCache(account);
       }
+      ImportanceHandler();
     }();
   }, [account?.instance]);
 

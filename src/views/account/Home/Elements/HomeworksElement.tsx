@@ -1,24 +1,40 @@
 import { NativeList, NativeListHeader } from "@/components/Global/NativeComponents";
 import { useCurrentAccount } from "@/stores/account";
-import { AccountService } from "@/stores/account/types";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo } from "react";
 import { useHomeworkStore } from "@/stores/homework";
 import { toggleHomeworkState, updateHomeworkForWeekInCache } from "@/services/homework";
 import HomeworkItem from "../../Homeworks/Atoms/Item";
-import { Homework } from "@/services/shared/Homework";
-import { debounce } from "lodash";
+import type { Homework } from "@/services/shared/Homework";
+import {debounce} from "lodash";
 import { PapillonNavigation } from "@/router/refs";
 import RedirectButton from "@/components/Home/RedirectButton";
 import { dateToEpochWeekNumber } from "@/utils/epochWeekNumber";
 
-const HomeworksElement = ({ navigation }) => {
+const HomeworksElement = ({ navigation, onImportance }) => {
   const account = useCurrentAccount(store => store.account!);
   const homeworks = useHomeworkStore(store => store.homeworks);
 
   const actualDay = useMemo(()=>new Date(), []);
 
+  const ImportanceHandler = () => {
+    if (!homeworks[dateToEpochWeekNumber(actualDay)]) return;
+
+    let score = 0;
+    const hw = homeworks[dateToEpochWeekNumber(actualDay)]
+      .filter(hw => hw.due / 1000 >= Date.now() / 1000 && hw.due / 1000 <= Date.now() / 1000 + 7 * 24 * 60 * 60)
+      .filter(hw => !hw.done);
+
+    const date = new Date();
+    if (date.getHours() >= 17 && date.getHours() < 22)
+      score += 4;
+    if (hw.length > 0)
+      score += 3;
+    onImportance(score);
+  };
+
   const updateHomeworks = useCallback(async () => {
     await updateHomeworkForWeekInCache(account, actualDay);
+    ImportanceHandler();
   }, [account, actualDay]);
 
   const debouncedUpdateHomeworks = useMemo(() => debounce(updateHomeworks, 500), [updateHomeworks]);

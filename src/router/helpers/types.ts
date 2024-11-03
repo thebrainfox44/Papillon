@@ -1,6 +1,6 @@
-import { AddonPlacementManifest } from "@/addons/types";
+import {AddonLogs as AddonLog, AddonPlacementManifest} from "@/addons/types";
 import type { Chat } from "@/services/shared/Chat";
-import type { Grade } from "@/services/shared/Grade";
+import type {Grade, GradesPerSubject} from "@/services/shared/Grade";
 import { Homework } from "@/services/shared/Homework";
 import { ReservationHistory } from "@/services/shared/ReservationHistory";
 import type { AccountService } from "@/stores/account/types";
@@ -10,6 +10,8 @@ import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import type pronote from "pawnote";
 import type React from "react";
 import type { School as SkolengoSchool} from "scolengo-api/types/models/School";
+import {Information} from "@/services/shared/Information";
+import { ImageSourcePropType } from "react-native";
 
 export type RouteParameters = {
   // welcome.index
@@ -51,6 +53,7 @@ export type RouteParameters = {
 
   // login.identityProvider
   IdentityProviderSelector: undefined;
+  Multi_Login: { instanceURL: string, title: string, image: ImageSourcePropType };
   UnivRennes1_Login: undefined;
   UnivRennes2_Login: undefined;
   UnivLimoges_Login: undefined;
@@ -77,11 +80,11 @@ export type RouteParameters = {
   Homeworks?: { outsideNav?: boolean };
   HomeworksDocument: { homework: Homework };
 
-  News?: { outsideNav?: boolean };
-  NewsItem: undefined;
+  News?: { outsideNav?: boolean, isED: boolean };
+  NewsItem: { message: string, important: boolean, isED: boolean };
 
   Grades?: { outsideNav?: boolean };
-  GradeSubject: undefined;
+  GradeSubject: { subject: GradesPerSubject, allGrades: Grade[] };
   GradeDocument: {
     grade: Grade,
     allGrades?: Grade[]
@@ -129,20 +132,25 @@ export type RouteParameters = {
   ExternalAccountSelector: undefined;
   ExternalTurboselfLogin: undefined
   ExternalArdLogin: undefined
-  QrcodeAnswer: undefined
+  QrcodeAnswer: { accountID: string }
   QrcodeScanner: { accountID: string }
-  PriceDetectionOnboarding: undefined
-  PriceBeforeScan: undefined
+  PriceDetectionOnboarding: { accountID: string }
+  PriceBeforeScan: { accountID: string }
+  PriceAfterScan: { accountID: string }
 
   AddonSettingsPage: {
     addon: AddonPlacementManifest
     from: keyof RouteParameters
   };
   AddonLogs: {
-    logs: Log[],
+    logs: AddonLog[],
     name: string
   };
-  AddonPage: undefined;
+  AddonPage: {
+    addon: AddonPlacementManifest
+    from: string
+    data: any
+  };
 };
 
 export type RouterScreenProps<ScreenName extends keyof RouteParameters> =
