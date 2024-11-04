@@ -51,9 +51,7 @@ const Menu: Screen<"Menu"> = ({ route, navigation }) => {
 
   const account = useCurrentAccount((store) => store.account);
   const linkedAccounts = useCurrentAccount((store) => store.linkedAccounts);
-  const screenWidth = Dimensions.get("window").width;
 
-  const [activeIndex, setActiveIndex] = useState(0);
   const [allBalances, setAllBalances] = useState<Balance[] | null>(null);
   const [allHistories, setAllHistories] = useState<ReservationHistory[] | null>(null);
   const [allQRCodes, setAllQRCodes] = useState<number[] | null>(null);
@@ -204,8 +202,7 @@ const Menu: Screen<"Menu"> = ({ route, navigation }) => {
                 >
                   <RestaurantCard
                     solde={allBalances[selectedIndex].amount}
-                    repas={allBalances[selectedIndex].remaining}
-                    label={allBalances[selectedIndex].label}
+                    repas={allBalances[selectedIndex].remaining || null }
                   />
                 </Reanimated.View>
               )}
