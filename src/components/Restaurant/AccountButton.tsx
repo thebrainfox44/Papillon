@@ -99,7 +99,7 @@ const AccountButton = ({ account, isSelected, onPress, colors }) => {
           gap: 8,
         }}>
           <Reanimated.View>
-            {account.label === "CAFETARIA" ? (
+            {(account.label).match(/\b(CAFETARIA|SNACK)\b/i) ? (
               <Coffee color={isSelected ? colors.primary : colors.text} size={20} />
             ) : (
               <Utensils color={isSelected ? colors.primary : colors.text} size={20} />
