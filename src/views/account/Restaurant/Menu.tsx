@@ -233,7 +233,7 @@ const Menu: Screen<"Menu"> = ({
             >
               {allBalances?.map((item, index) => (
                 <View style={{ width: screenWidth - 32 }} key={index}>
-                  <RestaurantCard solde={item.amount} repas={item.remaining} />
+                  <RestaurantCard solde={item.amount} repas={item.remaining} label={item.label} />
                 </View>
               ))}
             </Reanimated.ScrollView>
@@ -462,6 +462,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
+    padding: 10,
   },
   dot: {
     width: 7,

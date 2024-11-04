@@ -6,9 +6,10 @@ import { useTheme } from "@react-navigation/native";
 interface RestaurantCardProps {
   solde: number
   repas: number
+  label: string
 }
 
-const RestaurantCard: React.FC<RestaurantCardProps> = ({ solde, repas }) => {
+const RestaurantCard: React.FC<RestaurantCardProps> = ({ solde, repas, label }) => {
   const theme = useTheme();
   const { colors } = theme;
 
@@ -35,7 +36,7 @@ const RestaurantCard: React.FC<RestaurantCardProps> = ({ solde, repas }) => {
             textAlign: "left",
           }}
         >
-          Solde actuel
+          Solde actuel ({label})
         </NativeText>
         <Text
           style={{
