@@ -139,15 +139,29 @@ const Menu: Screen<"Menu"> = ({ route, navigation }) => {
         const accountPromises = linkedAccounts.map(async (account) => {
           try {
             const [balance, history, cardnumber, booking] = await Promise.all([
-              balanceFromExternal(account),
-              reservationHistoryFromExternal(account),
-              qrcodeFromExternal(account),
-              getBookingsAvailableFromExternal(account, getWeekNumber(new Date())),
+              balanceFromExternal(account).catch(err => {
+                console.warn(`Error fetching balance for account ${account}:`, err);
+                return [];
+              }),
+              reservationHistoryFromExternal(account).catch(err => {
+                console.warn(`Error fetching history for account ${account}:`, err);
+                return [];
+              }),
+              qrcodeFromExternal(account).catch(err => {
+                console.warn(`Error fetching QR code for account ${account}:`, err);
+                return 0;
+              }),
+              getBookingsAvailableFromExternal(account, getWeekNumber(today)).catch(err => {
+                console.warn(`Error fetching bookings for account ${account}:`, err);
+                return [];
+              })
             ]);
+
             newBalances.push(...balance);
             newHistories.push(...history);
             newBookings.push(...booking);
             if (cardnumber !== 0) newQRCodes.push(cardnumber);
+
           } catch (error) {
             console.warn(`An error occurred with account ${account}:`, error);
           }
