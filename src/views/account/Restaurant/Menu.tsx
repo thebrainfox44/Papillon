@@ -156,10 +156,12 @@ const Menu: Screen<"Menu"> = ({ route, navigation }) => {
                 return [];
               })
             ]);
+
             newBalances.push(...balance);
             newHistories.push(...history);
             newBookings.push(...booking);
             if (cardnumber !== 0) newQRCodes.push(cardnumber);
+
           } catch (error) {
             console.warn(`An error occurred with account ${account}:`, error);
           }
