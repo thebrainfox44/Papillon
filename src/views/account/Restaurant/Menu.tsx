@@ -151,7 +151,7 @@ const Menu: Screen<"Menu"> = ({ route, navigation }) => {
                 console.warn(`Error fetching QR code for account ${account}:`, err);
                 return 0;
               }),
-              getBookingsAvailableFromExternal(account, getWeekNumber(today)).catch(err => {
+              getBookingsAvailableFromExternal(account, getWeekNumber(new Date())).catch(err => {
                 console.warn(`Error fetching bookings for account ${account}:`, err);
                 return [];
               })
