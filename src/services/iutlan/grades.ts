@@ -31,8 +31,6 @@ export const saveIUTLanGrades = async (account: LocalAccount) => {
       };
 
       const grades: Grade[] = matiere.evaluations.map((note) => {
-        console.log(note);
-
         const grade = {
           student: {
             value: parseInt(note.note.value),

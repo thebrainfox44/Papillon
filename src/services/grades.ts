@@ -95,8 +95,6 @@ export async function updateGradesAndAveragesInCache <T extends Account> (accoun
 
           grades = data.grades;
           averages = data.averages;
-
-          console.log(data);
         }
         else {
           grades = [];
