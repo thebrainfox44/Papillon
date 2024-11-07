@@ -155,6 +155,11 @@ export interface LocalAccount extends BaseAccount {
     name: string,
     rawData: Record<string, unknown>
   }
+
+  credentials: {
+    username: string
+    password: string
+  }
 }
 
 export interface TurboselfAccount extends BaseExternalAccount {
