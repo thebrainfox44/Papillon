@@ -15,6 +15,13 @@ const IdentityProviderSelector: Screen<"IdentityProviderSelector"> = ({ navigati
       image: require("@/../assets/images/service_uphf.png"),
       navigate: () => navigation.navigate("UnivUphf_Login"),
     },
+    {
+      name: "iut_lannion",
+      title: "IUT de Lannion",
+      description: "Utilisez votre compte Université Rennes 1 pour vous connecter",
+      image: require("@/../assets/images/service_iutlan.png"),
+      navigate: () => navigation.navigate("UnivIUTLannion_Login"),
+    },
   ];
 
   const identityProviders = [
@@ -31,13 +38,6 @@ const IdentityProviderSelector: Screen<"IdentityProviderSelector"> = ({ navigati
       description: "Utilisez votre compte Sésame pour vous connecter",
       image: require("@/../assets/images/service_rennes2.png"),
       navigate: () => navigation.navigate("UnivRennes2_Login"),
-    },
-    {
-      name: "iut_lannion",
-      title: "IUT de Lannion",
-      description: "Utilisez votre compte Université Rennes 1 pour vous connecter",
-      image: require("@/../assets/images/service_iutlan.png"),
-      navigate: () => navigation.navigate("UnivIUTLannion_Login"),
     },
     {
       name: "univ_limoges",
