@@ -117,7 +117,7 @@ export type RouteParameters = {
 
   Menu?: undefined;
   RestaurantQrCode: {
-    QrCodes: number[]
+    QrCodes: string[]
   };
   RestaurantHistory: {
     histories: ReservationHistory[]
@@ -132,6 +132,8 @@ export type RouteParameters = {
   ExternalAccountSelector: undefined;
   ExternalTurboselfLogin: undefined
   ExternalArdLogin: undefined
+  ExternalIzlyLogin: undefined
+  IzlyActivation: { username: string, password: string }
   QrcodeAnswer: { accountID: string }
   QrcodeScanner: { accountID: string }
   PriceDetectionOnboarding: { accountID: string }
