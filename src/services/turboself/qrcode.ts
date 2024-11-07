@@ -1,6 +1,6 @@
 import type { TurboselfAccount } from "@/stores/account/types";
 
-export const getQRCode = async (account: TurboselfAccount): Promise<string> => {
-  const cardNumber = await account.authentication.session.host?.cardNumber;
-  return cardNumber?.toString() ?? "0";
+export const getQRCode = async (account: TurboselfAccount): Promise<string | null> => {
+  const cardNumber = account.authentication.session.host?.cardNumber;
+  return cardNumber?.toString() ?? null;
 };

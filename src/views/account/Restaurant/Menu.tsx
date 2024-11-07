@@ -157,7 +157,7 @@ const Menu: Screen<"Menu"> = ({ route, navigation }) => {
             newBalances.push(...balance);
             newHistories.push(...history);
             newBookings.push(...booking);
-            if (cardnumber !== "0") newQRCodes.push(cardnumber);
+            if (cardnumber) newQRCodes.push(cardnumber);
 
           } catch (error) {
             console.warn(`An error occurred with account ${account}:`, error);

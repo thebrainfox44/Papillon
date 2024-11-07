@@ -1,6 +1,6 @@
 import {AccountService, type ExternalAccount} from "@/stores/account/types";
 
-export const qrcodeFromExternal = async (account: ExternalAccount): Promise<string> => {
+export const qrcodeFromExternal = async (account: ExternalAccount): Promise<string | null> => {
   switch (account.service) {
     case AccountService.Turboself: {
       const { getQRCode } = await import("./turboself/qrcode");
