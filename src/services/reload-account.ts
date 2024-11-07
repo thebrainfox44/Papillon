@@ -25,7 +25,7 @@ export async function reload <T extends Account> (account: T): Promise<Reconnect
       const { reload } = await import("./turboself/reload");
       const auth = await reload(account);
       // keep instance the same
-      return { instance: undefined, authentication: { auth, session: account.authentication.session } };
+      return { instance: undefined, authentication: { session: auth } };
     }
     case AccountService.ARD: {
       const { reload } = await import("./ard/reload");
@@ -42,12 +42,13 @@ export async function reload <T extends Account> (account: T): Promise<Reconnect
       const res = await reload(account);
       return { instance: res.instance, authentication: res.authentication };
     }
-    case AccountService.UPHF: {
-      const { reloadInstance } = await import("./uphf/reload-uphf");
+    case AccountService.Multi: {
+      const { reloadInstance } = await import("./multi/reload-multi");
       return await reloadInstance(account.authentication) as Reconnected<T>;
     }
     default: {
-      throw new Error("Service not implemented.");
+      console.warn("Service not implemented");
+      return { instance: undefined, authentication: undefined };
     }
   }
 }
