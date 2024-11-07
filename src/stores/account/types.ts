@@ -3,6 +3,7 @@ import type { Account as PawdirecteAccount, Session as PawdirecteSession } from 
 import type { Client as ARDClient, Client as PawrdClient } from "pawrd";
 import { Client as TurboselfClient } from "turboself-api";
 import type ScolengoAPI from "scolengo-api";
+import {Configuration, Identification} from "ezly";
 import type MultiAPI from "esup-multi.js";
 import { SkolengoAuthConfig } from "@/services/skolengo/skolengo-types";
 import { User as ScolengoAPIUser } from "scolengo-api/types/models/Common";
@@ -75,7 +76,8 @@ export enum AccountService {
   ARD,
   Parcoursup,
   Onisep,
-  Multi
+  Multi,
+  Izly
 }
 
 /**
@@ -184,6 +186,15 @@ export interface ARDAccount extends BaseExternalAccount {
   }
 }
 
+export interface IzlyAccount extends BaseExternalAccount {
+  service: AccountService.Izly
+  instance?: Identification
+  authentication: {
+    secret: string
+    configuration: Configuration
+  }
+}
+
 export type PrimaryAccount = (
   | PronoteAccount
   | EcoleDirecteAccount
@@ -194,6 +205,7 @@ export type PrimaryAccount = (
 export type ExternalAccount = (
   | TurboselfAccount
   | ARDAccount
+  | IzlyAccount
 );
 
 export type Account = (

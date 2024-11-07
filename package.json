@@ -59,6 +59,7 @@
     "expo-system-ui": "~3.0.7",
     "expo-task-manager": "~11.8.2",
     "expo-web-browser": "~13.0.3",
+    "ezly": "^1.3.0",
     "html-entities": "^2.5.2",
     "html-react-parser": "^5.1.12",
     "html-to-text": "^9.0.5",
