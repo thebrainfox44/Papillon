@@ -18,7 +18,7 @@ export const balance = async (account: IzlyAccount): Promise<Balance[]> => {
             amount: balance.cashValue,
             currency: currency,
             remaining: null,
-            label: "Self"
+            label: "Cash"
         }]: [])
     ]
 };
