@@ -5,15 +5,15 @@ import { operations, OperationKind} from "ezly";
 export const history = async (account: IzlyAccount): Promise<ReservationHistory[]> => {
   const payments = await operations(account.instance!, OperationKind.Payment, 10);
   const topup = await operations(account.instance!, OperationKind.TopUp, 10);
-  const currency = account.authentication.configuration.currency
+  const currency = account.authentication.configuration.currency;
 
   return [
-      ...(payments ?? []).map((item) => ({
-        amount: item.isCredit ? item.amount : -item.amount,
-        timestamp: item.date.getTime(),
-        currency: currency,
-        label: "Paiement"
-      })),
+    ...(payments ?? []).map((item) => ({
+      amount: item.isCredit ? item.amount : -item.amount,
+      timestamp: item.date.getTime(),
+      currency: currency,
+      label: "Paiement"
+    })),
     ...(topup ?? []).map((item) => ({
       amount: item.isCredit ? item.amount : -item.amount,
       timestamp: item.date.getTime(),
