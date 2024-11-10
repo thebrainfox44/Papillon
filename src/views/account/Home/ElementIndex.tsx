@@ -21,3 +21,9 @@ export const Elements = [
     component: HomeworksElement,
   }
 ];
+
+export type Element = {
+  id: string
+  component: React.FC<any>
+  importance?: number
+};
