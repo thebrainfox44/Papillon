@@ -27,7 +27,7 @@ const BackgroundIUTLannion: Screen<"BackgroundIUTLannion"> = ({ route, navigatio
   const theme = useTheme();
 
   if(!firstLogin) {
-    if(account?.service == AccountService.Local) {
+    if(account?.service == AccountService.Local && account.credentials) {
       username = account.credentials.username;
       password = account.credentials.password;
     }
