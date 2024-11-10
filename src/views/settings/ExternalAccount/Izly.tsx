@@ -32,6 +32,9 @@ const ExternalIzlyLogin: Screen<"ExternalIzlyLogin"> = ({ navigation }) => {
       onLogin={(username, password) => handleLogin(username, password)}
       loading={loading}
       error={error}
+      usernamePlaceholder="Identifiant ou adresse e-mail"
+      passwordLabel="Code Izly"
+      passwordPlaceholder="Code Izly à 6 chiffres"
     />
   );
 };

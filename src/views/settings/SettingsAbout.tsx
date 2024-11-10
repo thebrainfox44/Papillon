@@ -187,9 +187,11 @@ const SettingsAbout: Screen<"SettingsAbout"> = ({ navigation }) => {
           <NativeText variant="title">
             Version des dépendances
           </NativeText>
-          <NativeText variant="subtitle">
-            RN : {PackageJSON.dependencies["react-native"].split("^")[1]} | Expo : {PackageJSON.devDependencies.expo.split("~")[1]}
-          </NativeText>
+          {PackageJSON.dependencies["react-native"] && PackageJSON.devDependencies.expo &&
+              <NativeText variant="subtitle">
+                RN : {PackageJSON.dependencies["react-native"].split("^")[1]} | Expo : {PackageJSON.devDependencies.expo.split("^")[1]}
+              </NativeText>
+          }
         </NativeItem>
       </NativeList>
 

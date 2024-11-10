@@ -78,7 +78,7 @@ const IzlyActivation: Screen<"IzlyActivation"> = ({ navigation, route }) => {
           style={styles.container}
         >
           <PapillonShineBubble
-            message={"Un lien d'activation à était envoyé, peux-tu me le donner ?"}
+            message={"Tu viens de recevoir un lien par SMS, peux tu me l'indiquer ?"}
             width={270}
             numberOfLines={2}
             offsetTop={insets.top}
@@ -124,6 +124,19 @@ const IzlyActivation: Screen<"IzlyActivation"> = ({ navigation, route }) => {
               </NativeList>
             </View>
           </View>
+
+          <NativeText
+            pointerEvents="none"
+            style={{
+              width: "100%",
+              paddingHorizontal: 16,
+              fontSize: 14,
+              color: colors.text + "55",
+              textAlign: "center",
+            }}
+          >
+            Papillon ne donnera jamais vos informations d'authentification à des tiers.
+          </NativeText>
 
 
           <View style={styles.buttons}>

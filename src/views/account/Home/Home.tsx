@@ -222,7 +222,7 @@ const Home: Screen<"HomeScreen"> = ({ navigation }) => {
   return (
     <View style={{flex: 1}}>
       {!modalOpen && focused && (
-        <StatusBar barStyle="light-content" />
+        <StatusBar barStyle="light-content" backgroundColor={"transparent"} translucent />
       )}
       <ContextMenu
         style={[{
