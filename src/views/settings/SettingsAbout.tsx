@@ -187,9 +187,10 @@ const SettingsAbout: Screen<"SettingsAbout"> = ({ navigation }) => {
           <NativeText variant="title">
             Version des dépendances
           </NativeText>
-          {PackageJSON.dependencies["react-native"] && PackageJSON.devDependencies.expo &&
+          {PackageJSON.dependencies["react-native"]  &&
               <NativeText variant="subtitle">
-                RN : {PackageJSON.dependencies["react-native"].split("^")[1]} | Expo : {PackageJSON.devDependencies.expo.split("^")[1]}
+                {/* @ts-expect-error Le module expo est ajouté aux dépendances au moment du build. */}
+                RN : {PackageJSON.dependencies["react-native"].split("^")[1]} | Expo : {(PackageJSON.devDependencies.expo || PackageJSON.dependencies.expo).split("^")[1]}
               </NativeText>
           }
         </NativeItem>
