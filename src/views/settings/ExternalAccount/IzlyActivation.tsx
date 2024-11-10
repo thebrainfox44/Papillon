@@ -44,7 +44,7 @@ const IzlyActivation: Screen<"IzlyActivation"> = ({ navigation, route }) => {
         isExternal: true,
         localID: uuid(),
         data: {}
-      }
+      };
 
       create(new_account);
       linkExistingExternalAccount(new_account);
@@ -66,13 +66,13 @@ const IzlyActivation: Screen<"IzlyActivation"> = ({ navigation, route }) => {
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <KeyboardAvoidingView
-          behavior="height"
-          keyboardVerticalOffset={insets.top + 64}
-          style={{
-            flex: 1,
-            backgroundColor: theme.colors.background,
-            overflow: "visible",
-          }}
+        behavior="height"
+        keyboardVerticalOffset={insets.top + 64}
+        style={{
+          flex: 1,
+          backgroundColor: theme.colors.background,
+          overflow: "visible",
+        }}
       >
         <SafeAreaView
           style={styles.container}
@@ -93,33 +93,33 @@ const IzlyActivation: Screen<"IzlyActivation"> = ({ navigation, route }) => {
               style={{ width: "100%" }}
             >
               {error && (
-                  <NativeList
-                      style={{
-                        backgroundColor: "#eb403422",
-                      }}
-                  >
-                    <NativeItem icon={<AlertTriangle />}>
-                      <NativeText variant="subtitle">{error}</NativeText>
-                    </NativeItem>
-                  </NativeList>
+                <NativeList
+                  style={{
+                    backgroundColor: "#eb403422",
+                  }}
+                >
+                  <NativeItem icon={<AlertTriangle />}>
+                    <NativeText variant="subtitle">{error}</NativeText>
+                  </NativeItem>
+                </NativeList>
               )}
               <NativeListHeader label="URL" />
               <NativeList>
                 <NativeItem>
-                    <TextInput
-                      value={activationURL}
-                      onChangeText={setActivationURL}
-                      onPress={() => {setError("")}}
-                      placeholder={"https://..."}
-                      placeholderTextColor={theme.colors.text + "55"}
-                      keyboardType={"url"}
-                      autoCapitalize="none"
-                      style={{
-                        fontSize: 16,
-                        fontFamily: "medium",
-                        color: theme.colors.text,
-                      }}
-                    />
+                  <TextInput
+                    value={activationURL}
+                    onChangeText={setActivationURL}
+                    onPress={() => {setError("");}}
+                    placeholder={"https://..."}
+                    placeholderTextColor={theme.colors.text + "55"}
+                    keyboardType={"url"}
+                    autoCapitalize="none"
+                    style={{
+                      fontSize: 16,
+                      fontFamily: "medium",
+                      color: theme.colors.text,
+                    }}
+                  />
                 </NativeItem>
               </NativeList>
             </View>

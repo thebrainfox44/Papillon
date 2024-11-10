@@ -18,7 +18,7 @@ interface AccountButtonProps {
   account: Balance
   isSelected: boolean
   onPress: () => any
-  colors: Theme['colors']
+  colors: Theme["colors"]
 }
 
 const AccountButton: React.FC<AccountButtonProps> = ({ account, isSelected, onPress, colors }) => {
