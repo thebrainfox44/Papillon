@@ -1,6 +1,4 @@
 import {type Account, AccountService} from "@/stores/account/types";
-import { Skolengo } from "scolengo-api";
-
 export interface Reconnected<T extends Account> {
   instance: T["instance"]
   authentication: T["authentication"]
@@ -25,10 +23,15 @@ export async function reload <T extends Account> (account: T): Promise<Reconnect
       const { reload } = await import("./turboself/reload");
       const auth = await reload(account);
       // keep instance the same
-      return { instance: undefined, authentication: { auth, session: account.authentication.session } };
+      return { instance: undefined, authentication: auth };
     }
     case AccountService.ARD: {
       const { reload } = await import("./ard/reload");
+      const instance = await reload(account);
+      return { instance, authentication: account.authentication };
+    }
+    case AccountService.Izly: {
+      const { reload } = await import("./izly/reload");
       const instance = await reload(account);
       return { instance, authentication: account.authentication };
     }
@@ -47,7 +50,8 @@ export async function reload <T extends Account> (account: T): Promise<Reconnect
       return await reloadInstance(account.authentication) as Reconnected<T>;
     }
     default: {
-      throw new Error("Service not implemented.");
+      console.warn("Service not implemented");
+      return { instance: undefined, authentication: undefined };
     }
   }
 }

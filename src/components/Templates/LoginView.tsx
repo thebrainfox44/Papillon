@@ -41,6 +41,10 @@ const LoginView: React.FC<{
     customFields: Record<string, string>
   ) => unknown;
   customFields?: LoginViewCustomInput[];
+  usernameLabel?: string;
+  usernamePlaceholder?: string;
+  passwordLabel?: string;
+  passwordPlaceholder?: string;
 }> = ({
   serviceIcon,
   serviceName,
@@ -49,6 +53,10 @@ const LoginView: React.FC<{
   autoCapitalize = "none",
   onLogin,
   customFields = [],
+  usernameLabel = "Identifiant",
+  usernamePlaceholder = "Nom d'utilisateur",
+  passwordLabel = "Mot de passe",
+  passwordPlaceholder = "Mot de passe",
 }) => {
   const theme = useTheme();
   const insets = useSafeAreaInsets();
@@ -105,7 +113,7 @@ const LoginView: React.FC<{
             style={{
               width: 42,
               height: 42,
-              borderRadius: 80,
+              borderRadius: 12,
             }}
           />
           <View
@@ -156,13 +164,13 @@ const LoginView: React.FC<{
           </NativeList>
         )}
 
-        <NativeListHeader label="Identifiant" />
+        <NativeListHeader label={usernameLabel} />
         <NativeList>
           <NativeItem>
             <TextInput
               value={username}
               onChangeText={setUsername}
-              placeholder="Nom d'utilisateur"
+              placeholder={usernamePlaceholder}
               autoCapitalize={autoCapitalize}
               placeholderTextColor={theme.colors.text + "55"}
               style={{
@@ -175,7 +183,7 @@ const LoginView: React.FC<{
           </NativeItem>
         </NativeList>
 
-        <NativeListHeader label="Mot de passe" />
+        <NativeListHeader label={passwordLabel} />
         <NativeList>
           <NativeItem>
             <View
@@ -188,7 +196,7 @@ const LoginView: React.FC<{
               <TextInput
                 value={password}
                 onChangeText={setPassword}
-                placeholder="Mot de passe"
+                placeholder={passwordPlaceholder}
                 placeholderTextColor={theme.colors.text + "55"}
                 autoCapitalize={autoCapitalize}
                 style={{
