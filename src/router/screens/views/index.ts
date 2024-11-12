@@ -71,6 +71,7 @@ export default [
   createScreen("GradeDocument", GradeDocument, {
     headerTitle: "Détail de la note",
     presentation: "modal",
+    headerShown: false,
   }),
   createScreen("ChatCreate", ChatCreate, {
     headerTitle: "Nouvelle discussion",
