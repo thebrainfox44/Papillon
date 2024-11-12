@@ -176,7 +176,7 @@ const GradeDocument: Screen<"GradeDocument"> = ({ route, navigation }) => {
         borderTopRightRadius: Platform.OS === "ios" ? 19 : 0,
         borderCurve: "continuous",
       }}
-      contentContainerStyle={{ flexGrow: 1 }}
+      contentContainerStyle={{ flexGrow: 1, alignItems: "center" }}
       contentInsetAdjustmentBehavior="automatic"
       showsVerticalScrollIndicator={false}
       decelerationRate={Platform.OS === "ios" && "fast"}
@@ -193,6 +193,8 @@ const GradeDocument: Screen<"GradeDocument"> = ({ route, navigation }) => {
       <View
         style={{
           minHeight: "100%",
+          width: "100%",
+          maxWidth: 500,
           backgroundColor: theme.colors.background,
           borderRadius: Platform.OS === "ios" ? 19 : 0,
           borderCurve: "continuous",
