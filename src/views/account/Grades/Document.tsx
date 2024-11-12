@@ -7,7 +7,7 @@ import {
 import { getSubjectData } from "@/services/shared/Subject";
 import { useTheme } from "@react-navigation/native";
 import React, { useEffect, useLayoutEffect, useState } from "react";
-import { Dimensions, Image, Pressable, ScrollView, Text, View } from "react-native";
+import { Dimensions, Image, Pressable, ScrollView, Text, View, Platform } from "react-native";
 import { GradeTitle } from "./Atoms/GradeTitle";
 import * as SystemUI from "expo-system-ui";
 import {
@@ -179,8 +179,8 @@ const GradeDocument: Screen<"GradeDocument"> = ({ route, navigation }) => {
       contentContainerStyle={{ flexGrow: 1 }}
       contentInsetAdjustmentBehavior="automatic"
       showsVerticalScrollIndicator={false}
-      decelerationRate={"fast"}
-      snapToInterval={(Dimensions.get("window").height / 3)}
+      decelerationRate={Platform.OS === "ios" && "fast"}
+      snapToInterval={Platform.OS === "ios" && (Dimensions.get("window").height / 3)}
     >
       <Pressable
         style={{
@@ -197,7 +197,7 @@ const GradeDocument: Screen<"GradeDocument"> = ({ route, navigation }) => {
           borderRadius: 20,
           borderCurve: "continuous",
           borderCurve: "continuous",
-          marginTop: Dimensions.get("window").height / 3,
+          marginTop: Platform.OS === "ios" ? Dimensions.get("window").height / 3 : 0,
           overflow: "hidden",
         }}
       >
