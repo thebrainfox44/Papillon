@@ -172,8 +172,8 @@ const GradeDocument: Screen<"GradeDocument"> = ({ route, navigation }) => {
     <ScrollView
       style={{
         flex: 1,
-        borderTopLeftRadius: Platform.OS === "ios" ? 20 : 0,
-        borderTopRightRadius: Platform.OS === "ios" ? 20 : 0,
+        borderTopLeftRadius: Platform.OS === "ios" ? 19 : 0,
+        borderTopRightRadius: Platform.OS === "ios" ? 19 : 0,
         borderCurve: "continuous",
       }}
       contentContainerStyle={{ flexGrow: 1 }}
@@ -194,10 +194,17 @@ const GradeDocument: Screen<"GradeDocument"> = ({ route, navigation }) => {
         style={{
           minHeight: "100%",
           backgroundColor: theme.colors.background,
-          borderRadius: Platform.OS === "ios" ? 20 : 0,
+          borderRadius: Platform.OS === "ios" ? 19 : 0,
           borderCurve: "continuous",
           marginTop: Platform.OS === "ios" ? Dimensions.get("window").height / 3 : 0,
-          overflow: "hidden",
+          overflow: "visible",
+          shadowColor: "#000",
+          shadowOffset: {
+            width: 0,
+            height: -2,
+          },
+          shadowOpacity: 0.3,
+          shadowRadius: 10,
         }}
       >
         <View
