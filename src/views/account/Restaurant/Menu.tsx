@@ -310,7 +310,7 @@ const Menu: Screen<"Menu"> = ({ route, navigation }) => {
                           <NativeText key={idx} variant="title">{food.name ?? ""}</NativeText>
                           {food.allergens.length > 0 && (
                             <View style={styles.allergensContainer}>
-                              <AlertTriangle size={16} color={colors.text}/>
+                              <AlertTriangle size={16} color={colors.text} opacity={0.6}/>
                               <NativeText key={"allergens-"+idx} variant="subtitle">Allergènes : {food.allergens.join(", ")}</NativeText>
                             </View>
                           )}
