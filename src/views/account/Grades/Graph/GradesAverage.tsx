@@ -15,7 +15,9 @@ import { View, StyleSheet, Platform, Alert } from "react-native";
 import Reanimated, {
   FadeIn,
   FadeInDown,
+  FadeInLeft,
   FadeOut,
+  FadeOutLeft,
   FadeOutUp,
   LinearTransition,
 } from "react-native-reanimated";
@@ -138,6 +140,34 @@ const GradesAverageGraph: React.FC<GradesAverageGraphProps> = ({
             layout={animPapillon(LinearTransition)}
             key={theme.colors.primary + account.instance}
           >
+            {((showDetails && !overall) || selectedDate) && (
+              <Reanimated.View
+                style={{
+                  position: "absolute",
+                  top: 10,
+                  left: 10,
+                  backgroundColor: theme.colors.primary + "22",
+                  paddingHorizontal: 8,
+                  paddingVertical: 4,
+                  borderRadius: 8,
+                  borderCurve: "continuous",
+                  zIndex: 100,
+                }}
+                entering={animPapillon(FadeInLeft)}
+                exiting={animPapillon(FadeOutLeft)}
+              >
+                <Reanimated.Text
+                  style={{
+                    fontSize: 14,
+                    color: theme.colors.primary,
+                    fontFamily: "semibold",
+                  }}
+                >
+                  Estimation
+                </Reanimated.Text>
+              </Reanimated.View>
+            )}
+
             {hLength > 1 ? (
               <Reanimated.View
                 layout={animPapillon(LinearTransition)}
