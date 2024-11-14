@@ -143,6 +143,14 @@ const GradesAverageGraph: React.FC<GradesAverageGraphProps> = ({
             {((showDetails && !overall) || selectedDate) && (
               <Reanimated.View
                 style={{
+                  height: 5,
+                }}
+              />
+            )}
+
+            {((showDetails && !overall) || selectedDate) && (
+              <Reanimated.View
+                style={{
                   position: "absolute",
                   top: 10,
                   left: 10,
