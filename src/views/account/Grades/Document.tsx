@@ -47,6 +47,10 @@ const GradeDocument: Screen<"GradeDocument"> = ({ route, navigation }) => {
     navigation.setOptions({
       headerTitle: "Note en " + subjectData.pretty,
       presentation: "transparentModal",
+      headerStyle: {
+        backgroundColor: Platform.OS === "android" ? subjectData.color : undefined,
+      },
+      headerTintColor: "#ffffff",
     });
   }, [navigation, subjectData]);
 
@@ -179,8 +183,8 @@ const GradeDocument: Screen<"GradeDocument"> = ({ route, navigation }) => {
       contentContainerStyle={{ flexGrow: 1, alignItems: "center" }}
       contentInsetAdjustmentBehavior="automatic"
       showsVerticalScrollIndicator={false}
-      decelerationRate={Platform.OS === "ios" && "fast"}
-      snapToInterval={Platform.OS === "ios" && (Dimensions.get("window").height / 3)}
+      decelerationRate={Platform.OS === "ios" ? "fast" : "normal"}
+      snapToInterval={Platform.OS === "ios" ? (Dimensions.get("window").height / 3) : undefined}
     >
       <Pressable
         style={{
@@ -244,17 +248,19 @@ const GradeDocument: Screen<"GradeDocument"> = ({ route, navigation }) => {
             />
           </View>
 
-          <View
-            style={{
-              backgroundColor: "#ffffff",
-              width: 60,
-              height: 4,
-              borderRadius: 2,
-              alignSelf: "center",
-              opacity: 0.3,
-              marginVertical: 8,
-            }}
-          />
+          {Platform.OS === "ios" &&
+            <View
+              style={{
+                backgroundColor: "#ffffff",
+                width: 60,
+                height: 4,
+                borderRadius: 2,
+                alignSelf: "center",
+                opacity: 0.3,
+                marginVertical: 8,
+              }}
+            />
+          }
 
           <View
             style={{
