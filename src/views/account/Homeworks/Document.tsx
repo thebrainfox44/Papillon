@@ -34,8 +34,6 @@ import getAndOpenFile from "@/utils/files/getAndOpenFile";
 
 const HomeworksDocument: Screen<"HomeworksDocument"> = ({ route }) => {
   const theme = useTheme();
-  const insets = useSafeAreaInsets();
-
   const stylesText = StyleSheet.create({
     body: {
       color: theme.colors.text,
