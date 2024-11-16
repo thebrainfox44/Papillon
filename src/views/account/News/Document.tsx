@@ -17,9 +17,9 @@ import {
   MoreHorizontal,
 } from "lucide-react-native";
 import React, { useEffect, useLayoutEffect, useState } from "react";
-import {View, Dimensions, Linking, TouchableOpacity, type GestureResponderEvent, Text} from "react-native";
+import {View, Dimensions, Linking, TouchableOpacity, type GestureResponderEvent, Text, StyleSheet} from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
-import RenderHtml from "react-native-render-html";
+import HTMLView from "react-native-htmlview";
 import { PapillonModernHeader } from "@/components/Global/PapillonModernHeader";
 import { LinearGradient } from "expo-linear-gradient";
 import { setNewsRead } from "@/services/news";
@@ -40,6 +40,19 @@ const NewsItem: Screen<"NewsItem"> = ({ route, navigation }) => {
   const account = useCurrentAccount((store) => store.account!);
 
   const theme = useTheme();
+  const stylesText = StyleSheet.create({
+    body: {
+      fontFamily: "medium",
+      fontSize: 16,
+      lineHeight: 22,
+      color: theme.colors.text,
+    },
+    a: {
+      color: theme.colors.primary,
+      textDecorationColor: theme.colors.primary,
+      textDecorationLine: "underline",
+    },
+  });
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -185,19 +198,9 @@ const NewsItem: Screen<"NewsItem"> = ({ route, navigation }) => {
               </Text>
             </View>
           )}
-          <RenderHtml
-            contentWidth={Dimensions.get("window").width - 16 * 2}
-            source={{
-              html: message.content,
-            }}
-            tagsStyles={tagsStyles}
-            renderersProps={renderersProps}
-            ignoredStyles={["fontFamily", "fontSize"]}
-            baseStyle={{
-              fontFamily: "regular",
-              fontSize: 16,
-              color: theme.colors.text,
-            }}
+          <HTMLView
+            value={`<body>${message.content}</body`}
+            stylesheet={stylesText}
           />
         </View>
 
