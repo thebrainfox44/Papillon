@@ -28,7 +28,7 @@ const RestaurantHistory = ({ route }: { route: NavigationProps }) => {
     histories.sort((a, b) => b.timestamp - a.timestamp);
 
     histories.forEach((history: ReservationHistory) => {
-      const formattedDate = formatDate(history.timestamp); // formatDate() retourne une chaîne formatée
+      const formattedDate = formatDate(history.timestamp);
       if (!historyMap.has(formattedDate)) {
         historyMap.set(formattedDate, []);
       }
@@ -36,7 +36,7 @@ const RestaurantHistory = ({ route }: { route: NavigationProps }) => {
     });
 
     historyMap.forEach((value) => {
-      value.sort((a, b) => b.timestamp - a.timestamp); // Trier les éléments dans chaque groupe
+      value.sort((a, b) => b.timestamp - a.timestamp);
     });
 
     return Array.from(historyMap);
