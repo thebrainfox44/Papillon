@@ -36,7 +36,7 @@ const SettingsMagic: Screen<"SettingsMagic"> = ({ navigation }) => {
           leading={
             <NativeIconGradient
               icon={<ArrowUpNarrowWide />}
-              colors={["#6FE3CD", "#04ACDC"]}
+              colors={["#04ACDC", "#6FE3CD"]}
             />
           }
         >
