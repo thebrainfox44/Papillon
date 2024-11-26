@@ -9,6 +9,9 @@ import { Page } from "./Atoms/Page";
 import { LessonsDateModal } from "./LessonsHeader";
 import { dateToEpochWeekNumber } from "@/utils/epochWeekNumber";
 
+import * as StoreReview from "expo-store-review";
+
+
 import Reanimated, {
   FadeIn,
   FadeOut,
@@ -27,6 +30,7 @@ import {
   PapillonModernHeader,
 } from "@/components/Global/PapillonModernHeader";
 import PapillonPicker from "@/components/Global/PapillonPicker";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Lessons: Screen<"Lessons"> = ({ route, navigation }) => {
   const account = useCurrentAccount((store) => store.account!);
@@ -173,6 +177,44 @@ const Lessons: Screen<"Lessons"> = ({ route, navigation }) => {
   }),
   [],
   );
+
+  const askForReview = async () => {
+    StoreReview.isAvailableAsync().then((available) => {
+      if (available) {
+        StoreReview.requestReview();
+      }
+    });
+  };
+
+  useEffect(() => {
+    // on focus
+    const unsubscribe = navigation.addListener("focus", () => {
+      AsyncStorage.getItem("review_coursesOpen").then((value) => {
+        if (value) {
+          if (parseInt(value) >= 7) {
+            AsyncStorage.setItem("review_coursesOpen", "0");
+
+            setTimeout(() => {
+              AsyncStorage.getItem("review_given").then((value) => {
+                if(!value) {
+                  console.log("Asking for review");
+                  askForReview();
+                  AsyncStorage.setItem("review_given", "true");
+                }
+              });
+            }, 1000);
+          }
+          else {
+            AsyncStorage.setItem("review_coursesOpen", (parseInt(value) + 1).toString());
+          }
+        } else {
+          AsyncStorage.setItem("review_coursesOpen", "1");
+        }
+      });
+    });
+
+    return unsubscribe;
+  }, []);
 
   return (
     <View style={{ flex: 1 }}>
