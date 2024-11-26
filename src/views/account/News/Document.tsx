@@ -32,12 +32,15 @@ import { newsInformationAcknowledge } from "pawnote";
 import parse_initials from "@/utils/format/format_pronote_initials";
 import { selectColorSeed } from "@/utils/format/select_color_seed";
 import { AccountService } from "@/stores/account/types";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const NewsItem: Screen<"NewsItem"> = ({ route, navigation }) => {
   const [message, setMessage] = useState<Information>(JSON.parse(route.params.message) as Information);
   const important = route.params.important;
   const isED = route.params.isED;
   const account = useCurrentAccount((store) => store.account!);
+
+  const insets = useSafeAreaInsets();
 
   const theme = useTheme();
   const stylesText = StyleSheet.create({
@@ -152,8 +155,8 @@ const NewsItem: Screen<"NewsItem"> = ({ route, navigation }) => {
       <ScrollView
         style={{
           flex: 1,
-          paddingBottom: 16,
-          paddingTop: 106,
+          paddingBottom: 16 + insets.bottom,
+          paddingTop: 106 - 16,
         }}
       >
         <View
@@ -161,43 +164,43 @@ const NewsItem: Screen<"NewsItem"> = ({ route, navigation }) => {
             paddingHorizontal: 16,
           }}
         >
+
           {account.service === AccountService.Pronote && message.ref.needToAcknowledge && (
-            <View
+            <NativeList inline
               style={{
-                flexDirection: "row",
-                alignItems: "center",
-                gap: 10,
-                marginBottom: 25,
+                marginBottom: 16,
               }}
             >
-              <PapillonCheckbox
-                checked={message.acknowledged}
-                onPress={async () => {
-                  if (!message.acknowledged && account.instance) {
-                    await newsInformationAcknowledge(
-                      account.instance,
-                      message.ref
-                    );
+              <NativeItem
+                leading={
+                  <PapillonCheckbox
+                    checked={message.acknowledged}
+                    onPress={async () => {
+                      if (!message.acknowledged && account.instance) {
+                        await newsInformationAcknowledge(
+                          account.instance,
+                          message.ref
+                        );
 
-                    setMessage((prev) => ({
-                      ...prev,
-                      read: true,
-                      acknowledged: true,
-                    }));
-                  }
-                }}
-                style={{ marginLeft: 25 }}
-                color="green"
-              />
-              <Text
-                style={{
-                  color: message.acknowledged ? "grey" : theme.colors.text,
-                }}
+                        setMessage((prev) => ({
+                          ...prev,
+                          read: true,
+                          acknowledged: true,
+                        }));
+                      }
+                    }}
+                    color="green"
+                  />
+                }
               >
-                J'ai lu et pris connaissance
-              </Text>
-            </View>
+                <NativeText variant="body">
+                  J'ai lu et pris connaissance
+                </NativeText>
+              </NativeItem>
+            </NativeList>
           )}
+
+
           <HTMLView
             value={`<body>${message.content}</body`}
             stylesheet={stylesText}
