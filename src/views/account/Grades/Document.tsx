@@ -227,7 +227,7 @@ const GradeDocument: Screen<"GradeDocument"> = ({ route, navigation }) => {
       contentInsetAdjustmentBehavior="automatic"
       showsVerticalScrollIndicator={false}
       decelerationRate={Platform.OS === "ios" ? "fast" : "normal"}
-      snapToInterval={Platform.OS === "ios" ? (Dimensions.get("window").height / 3) : undefined}
+      snapToInterval={Platform.OS === "ios" ? (Dimensions.get("window").height / 4) : undefined}
     >
       <Pressable
         style={{
@@ -245,7 +245,7 @@ const GradeDocument: Screen<"GradeDocument"> = ({ route, navigation }) => {
           backgroundColor: theme.colors.background,
           borderRadius: Platform.OS === "ios" ? 19 : 0,
           borderCurve: "continuous",
-          marginTop: Platform.OS === "ios" ? Dimensions.get("window").height / 3 : 0,
+          marginTop: Platform.OS === "ios" ? Dimensions.get("window").height / 4 : 0,
           overflow: "hidden",
         }}
       >
