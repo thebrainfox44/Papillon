@@ -203,14 +203,7 @@ const GradeDocument: Screen<"GradeDocument"> = ({ route, navigation }) => {
           borderRadius: Platform.OS === "ios" ? 19 : 0,
           borderCurve: "continuous",
           marginTop: Platform.OS === "ios" ? Dimensions.get("window").height / 3 : 0,
-          overflow: "visible",
-          shadowColor: "#000",
-          shadowOffset: {
-            width: 0,
-            height: -2,
-          },
-          shadowOpacity: 0.3,
-          shadowRadius: 10,
+          overflow: "hidden",
         }}
       >
         <View
