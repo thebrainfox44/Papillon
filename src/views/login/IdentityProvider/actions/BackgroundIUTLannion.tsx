@@ -159,7 +159,7 @@ const BackgroundIUTLannion: Screen<"BackgroundIUTLannion"> = ({ route, navigatio
           gap: 6,
         }}
       >
-        <PapillonSpinner size={56} strokeWidth={5} />
+        <PapillonSpinner size={56} strokeWidth={5} color={theme.colors.primary} />
         <View style={{ height: 10 }} />
         <NativeText variant="title">
           En attente du portail
