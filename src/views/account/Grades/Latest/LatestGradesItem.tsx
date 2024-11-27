@@ -42,8 +42,6 @@ const GradesLatestItem: React.FC<GradeLatestItemProps> = ({
       <NativeList
         animated
         key={grade.id}
-        entering={animPapillon(FadeInRight).delay(100 * i + 100)}
-        exiting={animPapillon(FadeOutLeft).delay(100 * i)}
         style={{
           width: 230,
         }}

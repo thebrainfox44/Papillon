@@ -173,6 +173,7 @@ const NewsScreen: Screen<"News"> = ({ route, navigation }) => {
               renderItem={renderItem}
               keyExtractor={(_, index) => `sorted-${index}`}
               scrollEnabled={false}
+              initialNumToRender={6}
             />
           </NativeList>
         </Reanimated.View>
