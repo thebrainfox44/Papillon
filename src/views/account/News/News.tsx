@@ -49,7 +49,7 @@ const NewsScreen: Screen<"News"> = ({ route, navigation }) => {
       navigation.addListener("focus", () => fetchData(true));
       fetchData();
     }
-  }, [sortedMessages, account.instance]);
+  }, [account.instance]);
 
   useEffect(() => {
     if (informations) {
