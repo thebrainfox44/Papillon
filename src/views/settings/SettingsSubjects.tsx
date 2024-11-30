@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback, useLayoutEffect, useMemo } from "react";
-import { Alert, FlatList, KeyboardAvoidingView, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Alert, FlatList, KeyboardAvoidingView, Text, TextInput, TouchableOpacity, View, Modal, StyleSheet, Button } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useTheme } from "@react-navigation/native";
@@ -145,6 +145,66 @@ const SettingsSubjects: Screen<"SettingsSubjects"> = ({ navigation }) => {
       ),
     });
   }, [navigation, colors.primary]);
+
+  const styles = StyleSheet.create({
+    modalContainer: {
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
+      backgroundColor: "rgba(0, 0, 0, 0.5)",
+    },
+    modalContent: {
+      width: 300,
+      padding: 20,
+      backgroundColor: "white",
+      borderRadius: 10,
+      alignItems: "center",
+    },
+    modalTitle: {
+      fontSize: 18,
+      fontWeight: "bold",
+      marginBottom: 10,
+    },
+    input: {
+      width: "100%",
+      height: 40,
+      borderColor: "#CCC",
+      borderWidth: 1,
+      borderRadius: 5,
+      paddingHorizontal: 10,
+      marginBottom: 20,
+      textAlign: "center",
+    },
+    buttonContainer: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      width: "100%",
+    },
+  });
+
+  const [selectedColor, setSelectedColor] = useState(null);
+  const [isModalVisible, setModalVisible] = useState(false);
+  const [customColor, setCustomColor] = useState("");
+
+  const openHexColorPicker = () => {
+    setModalVisible(true);
+  };
+
+  const closeHexColorPicker = () => {
+    setModalVisible(false);
+    setCustomColor(""); // Reset input field
+  };
+
+  const applyCustomColor = (customColor: any) => {
+    console.log(customColor);
+    if (/^#[0-9A-F]{6}$/i.test(customColor)) {
+      setSelectedColor(customColor);
+      closeHexColorPicker();
+      console.log("Custom color applied:", customColor);
+    } else {
+      alert("Please enter a valid HEX color code (e.g., #FFFFFF)");
+    }
+  };
 
   const renderSubjectItem = useCallback(({ item: subject, index }: { item: Item, index: number }) => {
     if (!subject[0] || !subject[1] || !subject[1].emoji || !subject[1].pretty || !subject[1].color)
@@ -315,41 +375,93 @@ const SettingsSubjects: Screen<"SettingsSubjects"> = ({ navigation }) => {
                       keyExtractor={(item) => item}
                       ListFooterComponent={<View style={{ width: 16 }} />}
                       showsHorizontalScrollIndicator={false}
-                      renderItem={({ item }) => (
-                        <TouchableOpacity
-                          onPress={() => handleSubjectColorChange(selectedSubject[0], item)}
-                        >
-                          <View
-                            style={{
-                              width: 32,
-                              height: 32,
-                              borderRadius: 80,
-                              backgroundColor: item,
-                              marginHorizontal: 5,
-                              alignItems: "center",
-                              justifyContent: "center",
-                            }}
-                          >
-                            {selectedSubject[1].color === item && (
-                              <Reanimated.View
+                      renderItem={({ item }) => {
+                        if (item === "colorPicker") {
+                          return (
+                            <TouchableOpacity
+                              onPress={() => {
+                                openHexColorPicker();
+                              }}
+                            >
+                              <View
                                 style={{
-                                  width: 26,
-                                  height: 26,
+                                  width: 32,
+                                  height: 32,
                                   borderRadius: 80,
-                                  backgroundColor: item,
-                                  borderColor: colors.background,
-                                  borderWidth: 3,
+                                  backgroundColor: "transparent",
+                                  borderColor: colors.primary,
+                                  borderWidth: 2,
+                                  marginHorizontal: 5,
+                                  alignItems: "center",
+                                  justifyContent: "center",
                                 }}
-                                entering={ZoomIn.springify().mass(1).damping(20).stiffness(300)}
-                                exiting={ZoomOut.springify().mass(1).damping(20).stiffness(300)}
-                              />
-                            )}
-                          </View>
-                        </TouchableOpacity>
-                      )}
+                              >
+                                <Text style={{ fontSize: 18, color: colors.primary }}>+</Text>
+                              </View>
+                            </TouchableOpacity>
+                          );
+                        }
+
+                        return (
+                          <TouchableOpacity
+                            onPress={() => handleSubjectColorChange(selectedSubject[0], item)}
+                          >
+                            <View
+                              style={{
+                                width: 32,
+                                height: 32,
+                                borderRadius: 80,
+                                backgroundColor: item,
+                                marginHorizontal: 5,
+                                alignItems: "center",
+                                justifyContent: "center",
+                              }}
+                            >
+                              {selectedSubject[1].color === item && (
+                                <Reanimated.View
+                                  style={{
+                                    width: 26,
+                                    height: 26,
+                                    borderRadius: 80,
+                                    backgroundColor: item,
+                                    borderColor: colors.background,
+                                    borderWidth: 3,
+                                  }}
+                                  entering={ZoomIn.springify().mass(1).damping(20).stiffness(300)}
+                                  exiting={ZoomOut.springify().mass(1).damping(20).stiffness(300)}
+                                />
+                              )}
+                            </View>
+                          </TouchableOpacity>
+                        );
+                      }}
                     />
                   </MemoizedNativeItem>
                 </MemoizedNativeList>
+                <Modal
+                  visible={isModalVisible}
+                  transparent
+                  animationType="slide"
+                  onRequestClose={closeHexColorPicker}
+                >
+                  <View style={styles.modalContainer}>
+                    <View style={styles.modalContent}>
+                      <Text style={styles.modalTitle}>Enter a HEX Color</Text>
+                      <TextInput
+                        style={styles.input}
+                        placeholder="#FFFFFF"
+                        value={customColor}
+                        onChangeText={setCustomColor}
+                        autoCapitalize="none"
+                        autoCorrect={false}
+                      />
+                      <View style={styles.buttonContainer}>
+                        <Button title="Cancel" onPress={closeHexColorPicker} />
+                        <Button title="Apply" onPress={() => applyCustomColor(customColor)} />
+                      </View>
+                    </View>
+                  </View>
+                </Modal>
               </>
             )}
           </BottomSheet>
