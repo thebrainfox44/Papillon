@@ -380,14 +380,14 @@ const SettingsSubjects: Screen<"SettingsSubjects"> = ({ navigation }) => {
                                   height: 32,
                                   borderRadius: 80,
                                   backgroundColor: "transparent",
-                                  borderColor: colors.primary,
+                                  borderColor: "#000000",
                                   borderWidth: 2,
                                   marginHorizontal: 5,
                                   alignItems: "center",
                                   justifyContent: "center",
                                 }}
                               >
-                                <Text style={{ fontSize: 18, color: colors.primary }}>+</Text>
+                                <Text style={{ fontSize: 18, color: "#000000" }}>+</Text>
                               </View>
                             </TouchableOpacity>
                           );
