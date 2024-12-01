@@ -14,6 +14,7 @@ import ColorIndicator from "@/components/Lessons/ColorIndicator";
 import { COLORS_LIST } from "@/services/shared/Subject";
 import type { Screen } from "@/router/helpers/types";
 import SubjectContainerCard from "@/components/Settings/SubjectContainerCard";
+import ButtonCta from "@/components/FirstInstallation/ButtonCta";
 
 const MemoizedNativeItem = React.memo(NativeItem);
 const MemoizedNativeList = React.memo(NativeList);
@@ -485,11 +486,11 @@ const SettingsSubjects: Screen<"SettingsSubjects"> = ({ navigation }) => {
                         />
                       </View>
                       <View style={styles.buttonContainer}>
-                        <TouchableOpacity style={[styles.button, { backgroundColor: colors.primary }]} onPress={closeHexColorPicker}>
-                          <Text style={styles.buttonText}>Annuler</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                          style={[styles.button, { backgroundColor: colors.primary }]}
+                        <ButtonCta value="Annuler" style={{ backgroundColor: colors.primary, width: 10 }} onPress={closeHexColorPicker}/>
+                        <ButtonCta
+                          value="Appliquer"
+                          primary
+                          style={{ backgroundColor: colors.primary }}
                           onPress={() => {
                             console.log(colors);
                             if (/^#[0-9A-F]{6}$/i.test(customColor)) {
@@ -497,9 +498,7 @@ const SettingsSubjects: Screen<"SettingsSubjects"> = ({ navigation }) => {
                               closeHexColorPicker();
                             }
                           }}
-                        >
-                          <Text style={styles.buttonText}>Valider</Text>
-                        </TouchableOpacity>
+                        />
                       </View>
                     </View>
                   </View>
