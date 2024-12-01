@@ -197,6 +197,17 @@ const SettingsSubjects: Screen<"SettingsSubjects"> = ({ navigation }) => {
       flexDirection: "row",
       justifyContent: "space-between",
     },
+    button: {
+      flex: 1,
+      marginHorizontal: 5,
+      paddingVertical: 10,
+      borderRadius: 20,
+      alignItems: "center",
+    },
+    buttonText: {
+      color: "white",
+      fontWeight: "bold",
+    },
   });
 
   const [isModalVisible, setModalVisible] = useState(false);
@@ -474,9 +485,11 @@ const SettingsSubjects: Screen<"SettingsSubjects"> = ({ navigation }) => {
                         />
                       </View>
                       <View style={styles.buttonContainer}>
-                        <Button title="Annuler" onPress={closeHexColorPicker} color={colors.primary}/>
-                        <Button color={colors.primary}
-                          title="Valider"
+                        <TouchableOpacity style={[styles.button, { backgroundColor: colors.primary }]} onPress={closeHexColorPicker}>
+                          <Text style={styles.buttonText}>Annuler</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                          style={[styles.button, { backgroundColor: colors.primary }]}
                           onPress={() => {
                             console.log(colors);
                             if (/^#[0-9A-F]{6}$/i.test(customColor)) {
@@ -484,7 +497,9 @@ const SettingsSubjects: Screen<"SettingsSubjects"> = ({ navigation }) => {
                               closeHexColorPicker();
                             }
                           }}
-                        />
+                        >
+                          <Text style={styles.buttonText}>Valider</Text>
+                        </TouchableOpacity>
                       </View>
                     </View>
                   </View>
