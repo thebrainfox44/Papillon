@@ -470,8 +470,8 @@ const SettingsSubjects: Screen<"SettingsSubjects"> = ({ navigation }) => {
                         />
                       </View>
                       <View style={styles.buttonContainer}>
-                        <Button title="Annuler" onPress={closeHexColorPicker} />
-                        <Button
+                        <Button title="Annuler" onPress={closeHexColorPicker} color={colors.primary}/>
+                        <Button color={colors.primary}
                           title="Valider"
                           onPress={() => {
                             if (/^#[0-9A-F]{6}$/i.test(customColor)) {
