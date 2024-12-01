@@ -99,6 +99,8 @@ const SettingsSubjects: Screen<"SettingsSubjects"> = ({ navigation }) => {
   }, [debouncedUpdateSubject]);
 
   const handleSubjectColorChange = useCallback((subjectKey: string, newColor: string) => {
+    console.log(subjectKey);
+    console.log(newColor);
     setLocalSubjects(prevSubjects =>
       prevSubjects.map(subject =>
         subject[0] === subjectKey ? [subject[0], { ...subject[1], color: newColor }] : subject
@@ -193,17 +195,6 @@ const SettingsSubjects: Screen<"SettingsSubjects"> = ({ navigation }) => {
   const closeHexColorPicker = () => {
     setModalVisible(false);
     setCustomColor(""); // Reset input field
-  };
-
-  const applyCustomColor = (customColor: any) => {
-    console.log(customColor);
-    if (/^#[0-9A-F]{6}$/i.test(customColor)) {
-      setSelectedColor(customColor);
-      closeHexColorPicker();
-      console.log("Custom color applied:", customColor);
-    } else {
-      alert("Please enter a valid HEX color code (e.g., #FFFFFF)");
-    }
   };
 
   const renderSubjectItem = useCallback(({ item: subject, index }: { item: Item, index: number }) => {
@@ -457,7 +448,12 @@ const SettingsSubjects: Screen<"SettingsSubjects"> = ({ navigation }) => {
                       />
                       <View style={styles.buttonContainer}>
                         <Button title="Cancel" onPress={closeHexColorPicker} />
-                        <Button title="Apply" onPress={() => applyCustomColor(customColor)} />
+                        <Button title="Apply" onPress={() => {
+                          if (/^#[0-9A-F]{6}$/i.test(customColor)) {
+                            handleSubjectColorChange(selectedSubject[0], customColor);
+                            closeHexColorPicker();
+                          }
+                        }} />
                       </View>
                     </View>
                   </View>
