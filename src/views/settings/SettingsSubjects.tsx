@@ -99,8 +99,6 @@ const SettingsSubjects: Screen<"SettingsSubjects"> = ({ navigation }) => {
   }, [debouncedUpdateSubject]);
 
   const handleSubjectColorChange = useCallback((subjectKey: string, newColor: string) => {
-    console.log(subjectKey);
-    console.log(newColor);
     setLocalSubjects(prevSubjects =>
       prevSubjects.map(subject =>
         subject[0] === subjectKey ? [subject[0], { ...subject[1], color: newColor }] : subject
