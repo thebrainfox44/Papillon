@@ -9,7 +9,7 @@ import { NativeItem, NativeList, NativeText } from "@/components/Global/NativeCo
 import { useCurrentAccount } from "@/stores/account";
 import MissingItem from "@/components/Global/MissingItem";
 import BottomSheet from "@/components/Modals/PapillonBottomSheet";
-import { Trash2 } from "lucide-react-native";
+import { Trash2, Palette } from "lucide-react-native";
 import ColorIndicator from "@/components/Lessons/ColorIndicator";
 import { COLORS_LIST } from "@/services/shared/Subject";
 import type { Screen } from "@/router/helpers/types";
@@ -412,7 +412,7 @@ const SettingsSubjects: Screen<"SettingsSubjects"> = ({ navigation }) => {
                                   justifyContent: "center",
                                 }}
                               >
-                                <Text style={{ fontSize: 18, color: colors.text }}>+</Text>
+                                <Palette color={colors.text}></Palette>
                               </View>
                             </TouchableOpacity>
                           );
