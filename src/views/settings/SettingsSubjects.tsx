@@ -211,6 +211,7 @@ const SettingsSubjects: Screen<"SettingsSubjects"> = ({ navigation }) => {
 
   const [isModalVisible, setModalVisible] = useState(false);
   const [customColor, setCustomColor] = useState("");
+  const [disabledValidate, setDisableValidate] = useState(true);
 
   const openHexColorPicker = () => {
     setModalVisible(true);
@@ -471,26 +472,31 @@ const SettingsSubjects: Screen<"SettingsSubjects"> = ({ navigation }) => {
                         />
                         <TextInput
                           style={styles.input}
-                          value={customColor.includes("#") ? customColor : "#"}
+                          value={customColor.startsWith("#") ? customColor : "#" + customColor}
                           onChangeText={(text) => {
                             if (!text.startsWith("#")) {
                               text = "#" + text;
                             }
-                            const validText = text.slice(0, 7).toUpperCase().replace(/[^#0-9A-F]/g, "");
+                            const validText = text.slice(0, 7).toUpperCase();
                             setCustomColor(validText);
+                            if (/^#[0-9A-F]{6}$/i.test(validText)) {
+                              setDisableValidate(false);
+                            } else {
+                              setDisableValidate(true);
+                            }
                           }}
                           autoCapitalize="none"
                           autoCorrect={false}
                         />
                       </View>
                       <View style={styles.buttonContainer}>
-                        <ButtonCta value="Annuler" style={{ backgroundColor: colors.primary, width: 10 }} onPress={closeHexColorPicker}/>
+                        <ButtonCta value="Annuler" disabled={ false } style={{ backgroundColor: colors.primary, minWidth: "10%", width: "75%" }} onPress={closeHexColorPicker}/>
                         <ButtonCta
                           value="Appliquer"
+                          disabled={ disabledValidate }
                           primary
-                          style={{ backgroundColor: colors.primary }}
+                          style={{ backgroundColor: colors.primary, minWidth: "10%", width: "75%" }}
                           onPress={() => {
-                            console.log(colors);
                             if (/^#[0-9A-F]{6}$/i.test(customColor)) {
                               handleSubjectColorChange(selectedSubject[0], customColor);
                               closeHexColorPicker();
