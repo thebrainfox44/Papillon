@@ -156,31 +156,42 @@ const SettingsSubjects: Screen<"SettingsSubjects"> = ({ navigation }) => {
       backgroundColor: "rgba(0, 0, 0, 0.5)",
     },
     modalContent: {
-      width: 300,
-      padding: 20,
+      width: "80%",
       backgroundColor: "white",
       borderRadius: 10,
-      alignItems: "center",
+      padding: 20,
     },
     modalTitle: {
       fontSize: 18,
       fontWeight: "bold",
-      marginBottom: 10,
+      marginBottom: 20,
+      textAlign: "center",
+    },
+    inputContainer: {
+      flexDirection: "row",
+      alignItems: "center",
+      marginBottom: 20,
+    },
+    colorPreview: {
+      width: 40,
+      height: 40,
+      borderRadius: 5,
+      borderWidth: 1,
+      borderColor: "#ccc",
+      marginRight: 10,
     },
     input: {
-      width: "100%",
+      flex: 1,
       height: 40,
-      borderColor: "#CCC",
+      borderColor: "#ccc",
       borderWidth: 1,
       borderRadius: 5,
       paddingHorizontal: 10,
-      marginBottom: 20,
-      textAlign: "center",
+      textAlignVertical: "center",
     },
     buttonContainer: {
       flexDirection: "row",
       justifyContent: "space-between",
-      width: "100%",
     },
   });
 
@@ -194,7 +205,7 @@ const SettingsSubjects: Screen<"SettingsSubjects"> = ({ navigation }) => {
 
   const closeHexColorPicker = () => {
     setModalVisible(false);
-    setCustomColor(""); // Reset input field
+    setCustomColor("");
   };
 
   const renderSubjectItem = useCallback(({ item: subject, index }: { item: Item, index: number }) => {
@@ -438,22 +449,38 @@ const SettingsSubjects: Screen<"SettingsSubjects"> = ({ navigation }) => {
                   <View style={styles.modalContainer}>
                     <View style={styles.modalContent}>
                       <Text style={styles.modalTitle}>Choisis une couleur</Text>
-                      <TextInput
-                        style={styles.input}
-                        placeholder="#FFFFFF"
-                        value={customColor}
-                        onChangeText={setCustomColor}
-                        autoCapitalize="none"
-                        autoCorrect={false}
-                      />
+                      <View style={styles.inputContainer}>
+                        <View
+                          style={[
+                            styles.colorPreview,
+                            { backgroundColor: /^#[0-9A-F]{6}$/i.test(customColor) ? customColor : "#FFFFFF" },
+                          ]}
+                        />
+                        <TextInput
+                          style={styles.input}
+                          value={customColor.includes("#") ? customColor : "#"}
+                          onChangeText={(text) => {
+                            if (!text.startsWith("#")) {
+                              text = "#" + text;
+                            }
+                            const validText = text.slice(0, 7).toUpperCase().replace(/[^#0-9A-F]/g, "");
+                            setCustomColor(validText);
+                          }}
+                          autoCapitalize="none"
+                          autoCorrect={false}
+                        />
+                      </View>
                       <View style={styles.buttonContainer}>
                         <Button title="Annuler" onPress={closeHexColorPicker} />
-                        <Button title="Valider" onPress={() => {
-                          if (/^#[0-9A-F]{6}$/i.test(customColor)) {
-                            handleSubjectColorChange(selectedSubject[0], customColor);
-                            closeHexColorPicker();
-                          }
-                        }} />
+                        <Button
+                          title="Valider"
+                          onPress={() => {
+                            if (/^#[0-9A-F]{6}$/i.test(customColor)) {
+                              handleSubjectColorChange(selectedSubject[0], customColor);
+                              closeHexColorPicker();
+                            }
+                          }}
+                        />
                       </View>
                     </View>
                   </View>
