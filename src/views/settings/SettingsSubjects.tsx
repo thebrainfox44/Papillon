@@ -195,7 +195,6 @@ const SettingsSubjects: Screen<"SettingsSubjects"> = ({ navigation }) => {
     },
   });
 
-  const [selectedColor, setSelectedColor] = useState(null);
   const [isModalVisible, setModalVisible] = useState(false);
   const [customColor, setCustomColor] = useState("");
 
