@@ -157,15 +157,18 @@ const SettingsSubjects: Screen<"SettingsSubjects"> = ({ navigation }) => {
     },
     modalContent: {
       width: "80%",
-      backgroundColor: "white",
-      borderRadius: 10,
+      backgroundColor: colors.background,
+      borderRadius: 20,
       padding: 20,
+      borderColor: colors.border,
+      borderWidth: 1
     },
     modalTitle: {
       fontSize: 18,
       fontWeight: "bold",
       marginBottom: 20,
       textAlign: "center",
+      color: colors.text
     },
     inputContainer: {
       flexDirection: "row",
@@ -177,17 +180,18 @@ const SettingsSubjects: Screen<"SettingsSubjects"> = ({ navigation }) => {
       height: 40,
       borderRadius: 5,
       borderWidth: 1,
-      borderColor: "#ccc",
+      borderColor: colors.border,
       marginRight: 10,
     },
     input: {
       flex: 1,
       height: 40,
-      borderColor: "#ccc",
+      borderColor: colors.border,
       borderWidth: 1,
       borderRadius: 5,
       paddingHorizontal: 10,
       textAlignVertical: "center",
+      color: colors.text
     },
     buttonContainer: {
       flexDirection: "row",
@@ -390,14 +394,14 @@ const SettingsSubjects: Screen<"SettingsSubjects"> = ({ navigation }) => {
                                   height: 32,
                                   borderRadius: 80,
                                   backgroundColor: "transparent",
-                                  borderColor: "#000000",
+                                  borderColor: colors.text,
                                   borderWidth: 2,
                                   marginHorizontal: 5,
                                   alignItems: "center",
                                   justifyContent: "center",
                                 }}
                               >
-                                <Text style={{ fontSize: 18, color: "#000000" }}>+</Text>
+                                <Text style={{ fontSize: 18, color: colors.text }}>+</Text>
                               </View>
                             </TouchableOpacity>
                           );
@@ -452,7 +456,7 @@ const SettingsSubjects: Screen<"SettingsSubjects"> = ({ navigation }) => {
                         <View
                           style={[
                             styles.colorPreview,
-                            { backgroundColor: /^#[0-9A-F]{6}$/i.test(customColor) ? customColor : "#FFFFFF" },
+                            { backgroundColor: /^#[0-9A-F]{6}$/i.test(customColor) ? customColor : colors.text },
                           ]}
                         />
                         <TextInput
@@ -474,6 +478,7 @@ const SettingsSubjects: Screen<"SettingsSubjects"> = ({ navigation }) => {
                         <Button color={colors.primary}
                           title="Valider"
                           onPress={() => {
+                            console.log(colors);
                             if (/^#[0-9A-F]{6}$/i.test(customColor)) {
                               handleSubjectColorChange(selectedSubject[0], customColor);
                               closeHexColorPicker();
