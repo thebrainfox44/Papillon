@@ -437,7 +437,7 @@ const SettingsSubjects: Screen<"SettingsSubjects"> = ({ navigation }) => {
                 >
                   <View style={styles.modalContainer}>
                     <View style={styles.modalContent}>
-                      <Text style={styles.modalTitle}>Enter a HEX Color</Text>
+                      <Text style={styles.modalTitle}>Choisis une couleur</Text>
                       <TextInput
                         style={styles.input}
                         placeholder="#FFFFFF"
@@ -447,8 +447,8 @@ const SettingsSubjects: Screen<"SettingsSubjects"> = ({ navigation }) => {
                         autoCorrect={false}
                       />
                       <View style={styles.buttonContainer}>
-                        <Button title="Cancel" onPress={closeHexColorPicker} />
-                        <Button title="Apply" onPress={() => {
+                        <Button title="Annuler" onPress={closeHexColorPicker} />
+                        <Button title="Valider" onPress={() => {
                           if (/^#[0-9A-F]{6}$/i.test(customColor)) {
                             handleSubjectColorChange(selectedSubject[0], customColor);
                             closeHexColorPicker();
