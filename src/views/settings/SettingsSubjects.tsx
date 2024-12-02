@@ -485,7 +485,7 @@ const SettingsSubjects: Screen<"SettingsSubjects"> = ({ navigation }) => {
                     )}
                   </MemoizedNativeItem>
                 </MemoizedNativeList>
-                <Modal
+                {/* <Modal
                   visible={isModalVisible}
                   transparent
                   animationType="slide"
@@ -537,7 +537,7 @@ const SettingsSubjects: Screen<"SettingsSubjects"> = ({ navigation }) => {
                       </View>
                     </View>
                   </View>
-                </Modal>
+                </Modal> */}
               </>
             )}
           </BottomSheet>
