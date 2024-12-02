@@ -452,6 +452,37 @@ const SettingsSubjects: Screen<"SettingsSubjects"> = ({ navigation }) => {
                         );
                       }}
                     />
+                    {isModalVisible && (
+                      <MemoizedNativeList>
+                        <MemoizedNativeItem>
+                          <MemoizedNativeText variant="subtitle" numberOfLines={1}>
+                            Écrire la couleur (6 caractères)
+                          </MemoizedNativeText>
+                          <TextInput
+                            style={{
+                              fontFamily: "medium",
+                              fontSize: 16,
+                              color: colors.text,
+                            }}
+                            value={customColor.startsWith("#") ? customColor : "#" + customColor}
+                            onChangeText={(text) => {
+                              if (!text.startsWith("#") || Number.isNaN(parseInt(text.split("#")[1]))) {
+                                text = "#";
+                              }
+
+                              const validText = text.slice(0, 7).toUpperCase();
+                              setCustomColor(validText);
+                              if (/^#[0-9A-F]{6}$/i.test(validText)) {
+                                setDisableValidate(false);
+                              } else {
+                                setDisableValidate(true);
+                              }
+                            }}
+                            autoFocus
+                          />
+                        </MemoizedNativeItem>
+                      </MemoizedNativeList>
+                    )}
                   </MemoizedNativeItem>
                 </MemoizedNativeList>
                 <Modal
