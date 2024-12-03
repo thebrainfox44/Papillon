@@ -9,12 +9,11 @@ import { NativeItem, NativeList, NativeText } from "@/components/Global/NativeCo
 import { useCurrentAccount } from "@/stores/account";
 import MissingItem from "@/components/Global/MissingItem";
 import BottomSheet from "@/components/Modals/PapillonBottomSheet";
-import { Trash2, Palette } from "lucide-react-native";
+import { Trash2, Check, X } from "lucide-react-native";
 import ColorIndicator from "@/components/Lessons/ColorIndicator";
 import { COLORS_LIST } from "@/services/shared/Subject";
 import type { Screen } from "@/router/helpers/types";
 import SubjectContainerCard from "@/components/Settings/SubjectContainerCard";
-import ButtonCta from "@/components/FirstInstallation/ButtonCta";
 
 const MemoizedNativeItem = React.memo(NativeItem);
 const MemoizedNativeList = React.memo(NativeList);
@@ -147,80 +146,7 @@ const SettingsSubjects: Screen<"SettingsSubjects"> = ({ navigation }) => {
     });
   }, [navigation, colors.primary]);
 
-  const styles = StyleSheet.create({
-    modalContainer: {
-      flex: 1,
-      justifyContent: "center",
-      alignItems: "center",
-      backgroundColor: "rgba(0, 0, 0, 0.2)",
-    },
-    modalContent: {
-      width: "80%",
-      backgroundColor: colors.background,
-      borderRadius: 20,
-      padding: 20,
-      borderColor: colors.border,
-      borderWidth: 1
-    },
-    modalTitle: {
-      fontSize: 18,
-      fontWeight: "bold",
-      marginBottom: 20,
-      textAlign: "center",
-      color: colors.text
-    },
-    inputContainer: {
-      flexDirection: "row",
-      alignItems: "center",
-      marginBottom: 20,
-    },
-    colorPreview: {
-      width: 40,
-      height: 40,
-      borderRadius: 5,
-      borderWidth: 1,
-      borderColor: colors.border,
-      marginRight: 10,
-    },
-    input: {
-      flex: 1,
-      height: 40,
-      borderColor: colors.border,
-      borderWidth: 1,
-      borderRadius: 5,
-      paddingHorizontal: 10,
-      textAlignVertical: "center",
-      color: colors.text
-    },
-    buttonContainer: {
-      flexDirection: "row",
-      justifyContent: "space-between",
-    },
-    button: {
-      flex: 1,
-      marginHorizontal: 5,
-      paddingVertical: 10,
-      borderRadius: 20,
-      alignItems: "center",
-    },
-    buttonText: {
-      color: "white",
-      fontWeight: "bold",
-    },
-  });
-
-  const [isModalVisible, setModalVisible] = useState(false);
   const [customColor, setCustomColor] = useState("");
-  const [disabledValidate, setDisableValidate] = useState(true);
-
-  const openHexColorPicker = () => {
-    setModalVisible(true);
-  };
-
-  const closeHexColorPicker = () => {
-    setModalVisible(false);
-    setCustomColor("");
-  };
 
   const renderSubjectItem = useCallback(({ item: subject, index }: { item: Item, index: number }) => {
     if (!subject[0] || !subject[1] || !subject[1].emoji || !subject[1].pretty || !subject[1].color)
@@ -392,32 +318,6 @@ const SettingsSubjects: Screen<"SettingsSubjects"> = ({ navigation }) => {
                       ListFooterComponent={<View style={{ width: 16 }} />}
                       showsHorizontalScrollIndicator={false}
                       renderItem={({ item }) => {
-                        if (item === "colorPicker") {
-                          return (
-                            <TouchableOpacity
-                              onPress={() => {
-                                openHexColorPicker();
-                              }}
-                            >
-                              <View
-                                style={{
-                                  width: 32,
-                                  height: 32,
-                                  borderRadius: 80,
-                                  backgroundColor: "transparent",
-                                  borderColor: colors.text,
-                                  borderWidth: 2,
-                                  marginHorizontal: 5,
-                                  alignItems: "center",
-                                  justifyContent: "center",
-                                }}
-                              >
-                                <Palette color={colors.text}></Palette>
-                              </View>
-                            </TouchableOpacity>
-                          );
-                        }
-
                         return (
                           <TouchableOpacity
                             onPress={() => handleSubjectColorChange(selectedSubject[0], item)}
@@ -452,92 +352,74 @@ const SettingsSubjects: Screen<"SettingsSubjects"> = ({ navigation }) => {
                         );
                       }}
                     />
-                    {isModalVisible && (
+                    {(
                       <MemoizedNativeList>
                         <MemoizedNativeItem>
                           <MemoizedNativeText variant="subtitle" numberOfLines={1}>
                             Écrire la couleur (6 caractères)
                           </MemoizedNativeText>
-                          <TextInput
-                            style={{
-                              fontFamily: "medium",
-                              fontSize: 16,
-                              color: colors.text,
-                            }}
-                            value={customColor.startsWith("#") ? customColor : "#" + customColor}
-                            onChangeText={(text) => {
-                              if (!text.startsWith("#") || Number.isNaN(parseInt(text.split("#")[1]))) {
-                                text = "#";
-                              }
-
-                              const validText = text.slice(0, 7).toUpperCase();
-                              setCustomColor(validText);
-                              if (/^#[0-9A-F]{6}$/i.test(validText)) {
-                                setDisableValidate(false);
-                              } else {
-                                setDisableValidate(true);
-                              }
-                            }}
-                            autoFocus
-                          />
+                          <View style={{ flexDirection: "row", alignItems: "center", marginTop: 10 }}>
+                            <View
+                              style={{
+                                width: 26,
+                                height: 26,
+                                backgroundColor: /^#[0-9A-F]{6}$/i.test(customColor) ? customColor : colors.text,
+                                borderWidth: 1,
+                                borderColor: colors.border,
+                                marginRight: 8,
+                                borderRadius: 80
+                              }}
+                            />
+                            <TextInput
+                              style={{
+                                fontFamily: "medium",
+                                fontSize: 16,
+                                color: colors.text,
+                                flex: 1,
+                              }}
+                              value={customColor !== "" ? customColor : "#"}
+                              onChangeText={(text) => {
+                                if (!text.startsWith("#")) {
+                                  text = "#" + text;
+                                }
+                                text = text.replaceAll(/[G-Z]/g, "");
+                                text = text.slice(0, 7).toUpperCase();
+                                setCustomColor(text);
+                              }}
+                              autoFocus
+                            />
+                            <TouchableOpacity
+                              onPress={() => {
+                                if (/^#[0-9A-F]{6}$/i.test(customColor)) {
+                                  handleSubjectColorChange(selectedSubject[0], customColor);
+                                  setCustomColor("");
+                                }
+                              }}
+                            >
+                              <View
+                                style={{
+                                  width: 32,
+                                  height: 32,
+                                  borderRadius: 80,
+                                  marginHorizontal: 5,
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                  backgroundColor: colors.primary,
+                                }}
+                              >
+                                {/^#[0-9A-F]{6}$/i.test(customColor) ? (
+                                  <Check color={"#fff"} />
+                                ) : (
+                                  <X color={"#fff"} />
+                                )}
+                              </View>
+                            </TouchableOpacity>
+                          </View>
                         </MemoizedNativeItem>
                       </MemoizedNativeList>
                     )}
                   </MemoizedNativeItem>
                 </MemoizedNativeList>
-                {/* <Modal
-                  visible={isModalVisible}
-                  transparent
-                  animationType="slide"
-                  onRequestClose={closeHexColorPicker}
-                >
-                  <View style={styles.modalContainer}>
-                    <View style={styles.modalContent}>
-                      <Text style={styles.modalTitle}>Choisis une couleur</Text>
-                      <View style={styles.inputContainer}>
-                        <View
-                          style={[
-                            styles.colorPreview,
-                            { backgroundColor: /^#[0-9A-F]{6}$/i.test(customColor) ? customColor : colors.text },
-                          ]}
-                        />
-                        <TextInput
-                          style={styles.input}
-                          value={customColor.startsWith("#") ? customColor : "#" + customColor}
-                          onChangeText={(text) => {
-                            if (!text.startsWith("#")) {
-                              text = "#" + text;
-                            }
-                            const validText = text.slice(0, 7).toUpperCase();
-                            setCustomColor(validText);
-                            if (/^#[0-9A-F]{6}$/i.test(validText)) {
-                              setDisableValidate(false);
-                            } else {
-                              setDisableValidate(true);
-                            }
-                          }}
-                          autoCapitalize="none"
-                          autoCorrect={false}
-                        />
-                      </View>
-                      <View style={styles.buttonContainer}>
-                        <ButtonCta value="Annuler" disabled={ false } style={{ backgroundColor: colors.primary, minWidth: "10%", width: "75%" }} onPress={closeHexColorPicker}/>
-                        <ButtonCta
-                          value="Appliquer"
-                          disabled={ disabledValidate }
-                          primary
-                          style={{ backgroundColor: colors.primary, minWidth: "10%", width: "75%" }}
-                          onPress={() => {
-                            if (/^#[0-9A-F]{6}$/i.test(customColor)) {
-                              handleSubjectColorChange(selectedSubject[0], customColor);
-                              closeHexColorPicker();
-                            }
-                          }}
-                        />
-                      </View>
-                    </View>
-                  </View>
-                </Modal> */}
               </>
             )}
           </BottomSheet>
