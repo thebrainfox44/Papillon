@@ -146,7 +146,7 @@ const SettingsSubjects: Screen<"SettingsSubjects"> = ({ navigation }) => {
     });
   }, [navigation, colors.primary]);
 
-  const [customColor, setCustomColor] = useState(selectedSubject[1].color);
+  const [customColor, setCustomColor] = useState("");
 
   const renderSubjectItem = useCallback(({ item: subject, index }: { item: Item, index: number }) => {
     if (!subject[0] || !subject[1] || !subject[1].emoji || !subject[1].pretty || !subject[1].color)
@@ -156,6 +156,7 @@ const SettingsSubjects: Screen<"SettingsSubjects"> = ({ navigation }) => {
       <MemoizedNativeItem
         onPress={() => {
           setSelectedSubject(subject);
+          setCustomColor(subject[1].color);
           setCurrentTitle(subject[1].pretty);
           setOpened(true);
         }}
@@ -352,69 +353,69 @@ const SettingsSubjects: Screen<"SettingsSubjects"> = ({ navigation }) => {
                         );
                       }}
                     />
-                      <MemoizedNativeList>
-                        <MemoizedNativeItem>
-                          <MemoizedNativeText variant="subtitle" numberOfLines={1}>
-                            Ou écrire la couleur (6 caractères)
-                          </MemoizedNativeText>
-                          <View style={{ flexDirection: "row", alignItems: "center", marginTop: 10 }}>
+                    <MemoizedNativeList>
+                      <MemoizedNativeItem>
+                        <MemoizedNativeText variant="subtitle" numberOfLines={1}>
+                          Ou écrire la couleur (6 caractères)
+                        </MemoizedNativeText>
+                        <View style={{ flexDirection: "row", alignItems: "center", marginTop: 10 }}>
+                          <View
+                            style={{
+                              width: 26,
+                              height: 26,
+                              backgroundColor: /^#[0-9A-F]{6}$/i.test(customColor) ? customColor : colors.text,
+                              borderWidth: 1,
+                              borderColor: colors.border,
+                              marginRight: 8,
+                              borderRadius: 80
+                            }}
+                          />
+                          <TextInput
+                            style={{
+                              fontFamily: "medium",
+                              fontSize: 16,
+                              color: colors.text,
+                              flex: 1,
+                            }}
+                            value={customColor !== "" ? customColor : "#"}
+                            onChangeText={(text) => {
+                              if (!text.startsWith("#")) {
+                                text = "#" + text;
+                              }
+                              text = text.replaceAll(/[G-Z]/g, "");
+                              text = text.slice(0, 7).toUpperCase();
+                              setCustomColor(text);
+                            }}
+                          />
+                          <TouchableOpacity
+                            onPress={() => {
+                              if (/^#[0-9A-F]{6}$/i.test(customColor)) {
+                                handleSubjectColorChange(selectedSubject[0], customColor);
+                                setCustomColor("");
+                              }
+                            }}
+                          >
                             <View
                               style={{
-                                width: 26,
-                                height: 26,
-                                backgroundColor: /^#[0-9A-F]{6}$/i.test(customColor) ? customColor : colors.text,
-                                borderWidth: 1,
-                                borderColor: colors.border,
-                                marginRight: 8,
-                                borderRadius: 80
-                              }}
-                            />
-                            <TextInput
-                              style={{
-                                fontFamily: "medium",
-                                fontSize: 16,
-                                color: colors.text,
-                                flex: 1,
-                              }}
-                              value={customColor !== "" ? customColor : "#"}
-                              onChangeText={(text) => {
-                                if (!text.startsWith("#")) {
-                                  text = "#" + text;
-                                }
-                                text = text.replaceAll(/[G-Z]/g, "");
-                                text = text.slice(0, 7).toUpperCase();
-                                setCustomColor(text);
-                              }}
-                            />
-                            <TouchableOpacity
-                              onPress={() => {
-                                if (/^#[0-9A-F]{6}$/i.test(customColor)) {
-                                  handleSubjectColorChange(selectedSubject[0], customColor);
-                                  setCustomColor("");
-                                }
+                                width: 32,
+                                height: 32,
+                                borderRadius: 80,
+                                marginHorizontal: 5,
+                                alignItems: "center",
+                                justifyContent: "center",
+                                backgroundColor: colors.primary,
                               }}
                             >
-                              <View
-                                style={{
-                                  width: 32,
-                                  height: 32,
-                                  borderRadius: 80,
-                                  marginHorizontal: 5,
-                                  alignItems: "center",
-                                  justifyContent: "center",
-                                  backgroundColor: colors.primary,
-                                }}
-                              >
-                                {/^#[0-9A-F]{6}$/i.test(customColor) ? (
-                                  <Check color={"#fff"} />
-                                ) : (
-                                  <X color={"#fff"} />
-                                )}
-                              </View>
-                            </TouchableOpacity>
-                          </View>
-                        </MemoizedNativeItem>
-                      </MemoizedNativeList>
+                              {/^#[0-9A-F]{6}$/i.test(customColor) ? (
+                                <Check color={"#fff"} />
+                              ) : (
+                                <X color={"#fff"} />
+                              )}
+                            </View>
+                          </TouchableOpacity>
+                        </View>
+                      </MemoizedNativeItem>
+                    </MemoizedNativeList>
                   </MemoizedNativeItem>
                 </MemoizedNativeList>
               </>
