@@ -352,7 +352,6 @@ const SettingsSubjects: Screen<"SettingsSubjects"> = ({ navigation }) => {
                         );
                       }}
                     />
-                    {(
                       <MemoizedNativeList>
                         <MemoizedNativeItem>
                           <MemoizedNativeText variant="subtitle" numberOfLines={1}>
