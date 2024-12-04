@@ -6,10 +6,7 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  View,
-  Modal,
-  StyleSheet,
-  Button
+  View
 } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
