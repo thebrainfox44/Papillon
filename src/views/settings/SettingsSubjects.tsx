@@ -355,7 +355,7 @@ const SettingsSubjects: Screen<"SettingsSubjects"> = ({ navigation }) => {
                       <MemoizedNativeList>
                         <MemoizedNativeItem>
                           <MemoizedNativeText variant="subtitle" numberOfLines={1}>
-                            Écrire la couleur (6 caractères)
+                            Ou écrire la couleur (6 caractères)
                           </MemoizedNativeText>
                           <View style={{ flexDirection: "row", alignItems: "center", marginTop: 10 }}>
                             <View
