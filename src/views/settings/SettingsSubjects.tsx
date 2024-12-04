@@ -400,7 +400,12 @@ const SettingsSubjects: Screen<"SettingsSubjects"> = ({ navigation }) => {
                             onPress={() => {
                               if (/^#[0-9A-F]{6}$/i.test(customColor)) {
                                 handleSubjectColorChange(selectedSubject[0], customColor);
-                                setCustomColor("");
+                                setSelectedSubject((prev) => {
+                                  if (prev) {
+                                    prev[1].color = customColor;
+                                  }
+                                  return prev;
+                                });
                               }
                             }}
                           >
