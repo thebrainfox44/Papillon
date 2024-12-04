@@ -416,7 +416,6 @@ const SettingsSubjects: Screen<"SettingsSubjects"> = ({ navigation }) => {
                           </View>
                         </MemoizedNativeItem>
                       </MemoizedNativeList>
-                    )}
                   </MemoizedNativeItem>
                 </MemoizedNativeList>
               </>
