@@ -146,7 +146,7 @@ const SettingsSubjects: Screen<"SettingsSubjects"> = ({ navigation }) => {
     });
   }, [navigation, colors.primary]);
 
-  const [customColor, setCustomColor] = useState("");
+  const [customColor, setCustomColor] = useState(selectedSubject[1].color);
 
   const renderSubjectItem = useCallback(({ item: subject, index }: { item: Item, index: number }) => {
     if (!subject[0] || !subject[1] || !subject[1].emoji || !subject[1].pretty || !subject[1].color)
