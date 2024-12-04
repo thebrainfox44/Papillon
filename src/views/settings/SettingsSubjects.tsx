@@ -426,7 +426,8 @@ const SettingsSubjects: Screen<"SettingsSubjects"> = ({ navigation }) => {
                                 <X color={"#fff"} />
                               )}
                             </View>
-                          </TouchableOpacity>
+                            </TouchableOpacity>
+                          )}
                         </View>
                       </MemoizedNativeItem>
                     </MemoizedNativeList>
