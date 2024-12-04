@@ -385,7 +385,6 @@ const SettingsSubjects: Screen<"SettingsSubjects"> = ({ navigation }) => {
                                 text = text.slice(0, 7).toUpperCase();
                                 setCustomColor(text);
                               }}
-                              autoFocus
                             />
                             <TouchableOpacity
                               onPress={() => {
