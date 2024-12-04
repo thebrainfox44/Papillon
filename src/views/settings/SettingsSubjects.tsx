@@ -397,35 +397,35 @@ const SettingsSubjects: Screen<"SettingsSubjects"> = ({ navigation }) => {
                           />
                           {customColor !== selectedSubject[1].color && (
                             <TouchableOpacity
-                            onPress={() => {
-                              if (/^#[0-9A-F]{6}$/i.test(customColor)) {
-                                handleSubjectColorChange(selectedSubject[0], customColor);
-                                setSelectedSubject((prev) => {
-                                  if (prev) {
-                                    prev[1].color = customColor;
-                                  }
-                                  return prev;
-                                });
-                              }
-                            }}
-                          >
-                            <View
-                              style={{
-                                width: 32,
-                                height: 32,
-                                borderRadius: 80,
-                                marginHorizontal: 5,
-                                alignItems: "center",
-                                justifyContent: "center",
-                                backgroundColor: colors.primary,
+                              onPress={() => {
+                                if (/^#[0-9A-F]{6}$/i.test(customColor)) {
+                                  handleSubjectColorChange(selectedSubject[0], customColor);
+                                  setSelectedSubject((prev) => {
+                                    if (prev) {
+                                      prev[1].color = customColor;
+                                    }
+                                    return prev;
+                                  });
+                                }
                               }}
                             >
-                              {/^#[0-9A-F]{6}$/i.test(customColor) ? (
-                                <Check color={"#fff"} />
-                              ) : (
-                                <X color={"#fff"} />
-                              )}
-                            </View>
+                              <View
+                                style={{
+                                  width: 32,
+                                  height: 32,
+                                  borderRadius: 80,
+                                  marginHorizontal: 5,
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                  backgroundColor: colors.primary,
+                                }}
+                              >
+                                {/^#[0-9A-F]{6}$/i.test(customColor) ? (
+                                  <Check color={"#fff"} />
+                                ) : (
+                                  <X color={"#fff"} />
+                                )}
+                              </View>
                             </TouchableOpacity>
                           )}
                         </View>
