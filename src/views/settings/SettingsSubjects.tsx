@@ -395,7 +395,8 @@ const SettingsSubjects: Screen<"SettingsSubjects"> = ({ navigation }) => {
                               setCustomColor(text);
                             }}
                           />
-                          <TouchableOpacity
+                          {customColor !== selectedSubject[1].color && (
+                            <TouchableOpacity
                             onPress={() => {
                               if (/^#[0-9A-F]{6}$/i.test(customColor)) {
                                 handleSubjectColorChange(selectedSubject[0], customColor);
