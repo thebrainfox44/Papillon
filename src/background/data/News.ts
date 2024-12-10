@@ -4,6 +4,7 @@ import { useCurrentAccount } from "@/stores/account";
 import { useNewsStore } from "@/stores/news";
 import { papillonNotify } from "../Notifications";
 import uuid from "@/utils/uuid-v4";
+import parse_news_resume from "@/utils/format/format_pronote_news";
 
 // Function to compare the differences between two arrays of objects
 const getDifferences = (currentNews: Information[], updatedNews: Information[]): Information[] => {
@@ -36,15 +37,22 @@ const fetchNews = async (): Promise<Information[]> => {
       case 1:
         papillonNotify({
           id: `${account.localID}-${differences[0].id}-news`,
-          title: differences[0].title,
-          body: differences[0].content,
+          title: `[${account.name}] Nouvelle information`,
+          subtitle: differences[0].title,
+          body: differences[0].content ? parse_news_resume(differences[0].content) : "Aucun resumé disponible.",
+          ios: {
+            categoryId: account.localID,
+          }
         });
         break;
       default:
         papillonNotify({
           id: `${account.localID}-${uuid()}-news`,
-          title: "Nouvelles informations",
+          title: `[${account.name}] Nouvelles informations`,
           body: `Vous avez ${differences.length} nouvelles informations.`,
+          ios: {
+            categoryId: account.localID,
+          }
         });
         break;
     }
