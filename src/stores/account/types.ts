@@ -7,6 +7,7 @@ import {Configuration, Identification} from "ezly";
 import type MultiAPI from "esup-multi.js";
 import { SkolengoAuthConfig } from "@/services/skolengo/skolengo-types";
 import { User as ScolengoAPIUser } from "scolengo-api/types/models/Common";
+import {OnlinePayments} from "pawrd/dist";
 
 export interface Tab {
   name: string
@@ -183,6 +184,7 @@ export interface ARDAccount extends BaseExternalAccount {
     username: string
     password: string
     schoolID: string
+    balances: OnlinePayments
   }
 }
 
