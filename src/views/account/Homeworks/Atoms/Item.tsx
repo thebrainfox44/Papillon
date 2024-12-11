@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { Paperclip, Sparkles } from "lucide-react-native";
+import {Clock, Paperclip, Sparkles} from "lucide-react-native";
 import { getSubjectData } from "@/services/shared/Subject";
-import { useTheme } from "@react-navigation/native";
+import { useRoute, useTheme} from "@react-navigation/native";
 import { NativeItem, NativeText } from "@/components/Global/NativeComponents";
 import PapillonCheckbox from "@/components/Global/PapillonCheckbox";
 import Reanimated, { LinearTransition } from "react-native-reanimated";
@@ -30,6 +30,8 @@ const HomeworkItem = ({ homework, navigation, onDonePressHandler, index, total }
   const [subjectData, setSubjectData] = useState(getSubjectData(homework.subject));
   const [category, setCategory] = useState<string | null>(null);
   const account = useCurrentAccount((store) => store.account!);
+
+  const route = useRoute();
 
   const stylesText = StyleSheet.create({
     body: {
@@ -64,6 +66,14 @@ const HomeworkItem = ({ homework, navigation, onDonePressHandler, index, total }
     setIsLoading(false);
     setMainLoaded(true);
   }, [homework.done]);
+
+  const timestampToString = (timestamp: number) => {
+    const date = new Date(timestamp);
+    const today = new Date();
+
+    const difference = Math.ceil((date.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+    return difference === 0 ? "Aujourd'hui" : difference === 1 ? "Demain" : difference === 2 ? "Après-demain" : `Dans ${difference} jours`;
+  };
 
   const renderCategoryOrReturnType = () => {
     if (category) {
@@ -181,6 +191,17 @@ const HomeworkItem = ({ homework, navigation, onDonePressHandler, index, total }
               value={`<body>${homework.content}</body>`}
               stylesheet={stylesText}
             />
+            {route.name === "HomeScreen" && (
+              <View style={{ flex: 1, flexDirection: "row", gap: 4, paddingVertical: 4, alignItems: "center", alignSelf: "flex-start" }}>
+                <Clock
+                  size={18}
+                  strokeWidth={2.5}
+                  opacity={0.6}
+                  color={theme.colors.text}
+                />
+                <NativeText style={{color: theme.colors.text, opacity:0.5}}>{timestampToString(homework.due)}</NativeText>
+              </View>
+            )}
           </Reanimated.View>
           {homework.attachments.length > 0 && (
             <Reanimated.View
