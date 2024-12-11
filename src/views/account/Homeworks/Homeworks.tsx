@@ -195,6 +195,14 @@ const WeekView: Screen<"Homeworks"> = ({ route, navigation }) => {
         acc[day] = acc[day].filter(homework => !homework.done);
       }
 
+      // homework completed downstairs
+      acc[day] = acc[day].sort((a, b) => {
+        if (a.done === b.done) {
+          return 0; // if both have the same status, keep the original order
+        }
+        return a.done ? 1 : -1; // completed go after
+      });
+
       // remove all empty days
       if (acc[day].length === 0) {
         delete acc[day];
