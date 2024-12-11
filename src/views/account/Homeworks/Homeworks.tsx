@@ -95,7 +95,7 @@ const WeekView: Screen<"Homeworks"> = ({ route, navigation }) => {
     start.setHours(0, 0, 0, 0);
     const diff = now.getTime() - start.getTime();
     const oneWeek = 1000 * 60 * 60 * 24 * 7;
-    return Math.floor(diff / oneWeek) + 1;
+    return Math.floor(diff / oneWeek);
   };
 
   const currentWeek = getCurrentWeekNumber();
