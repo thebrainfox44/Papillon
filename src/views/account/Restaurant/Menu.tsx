@@ -82,7 +82,7 @@ const Menu: Screen<"Menu"> = ({ route, navigation }) => {
       setAllBookings(allBookings);
     }
 
-    const dailyMenu = account ? await getMenu(account, date) : null;
+    const dailyMenu = account ? await getMenu(account, date).catch(() => null) : null;
     setCurrentMenu(dailyMenu);
     setMenuLoading(false);
   };
