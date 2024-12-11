@@ -88,6 +88,7 @@ const Grades: Screen<"Grades"> = ({ route, navigation }) => {
     void (async () => {
       setIsLoading(true);
       await updateData();
+      console.log(JSON.stringify(grades));
 
       if(isRefreshing) {
         navigation.navigate("BackgroundIUTLannion");
@@ -106,12 +107,10 @@ const Grades: Screen<"Grades"> = ({ route, navigation }) => {
 
       const gradesPerSubject: GradesPerSubject[] = [];
 
-      for (const average of (averages[selectedPeriod] || { subjects: [] })
-        .subjects) {
+      for (const average of (averages[selectedPeriod] || { subjects: [] }).subjects) {
         const newGrades = (grades[selectedPeriod] || [])
-          .filter((grade) => grade.subjectName === average.subjectName)
+          .filter((grade) => grade.subjectId === average.id)
           .sort((a, b) => b.timestamp - a.timestamp);
-
         gradesPerSubject.push({
           average: average,
           grades: newGrades,
