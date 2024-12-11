@@ -166,7 +166,7 @@ const Menu: Screen<"Menu"> = ({ route, navigation }) => {
         });
 
         await Promise.all(accountPromises);
-        setAllBalances(newBalances);
+        setAllBalances(newBalances.sort((a, b) => a.label.toLowerCase() === "cafetaria" ? 1 : -1));
         setAllHistories(newHistories);
         setAllQRCodes(newQRCodes);
         setAllBookings(newBookings);
