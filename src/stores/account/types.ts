@@ -185,6 +185,7 @@ export interface ARDAccount extends BaseExternalAccount {
     password: string
     schoolID: string
     balances: OnlinePayments
+    mealPrice: number
   }
 }
 
