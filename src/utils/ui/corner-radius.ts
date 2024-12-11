@@ -4,79 +4,53 @@ const defaultRadius = 5.0;
 
 const radiuses = [
   {
-    devices: [
-      "iPhone X",
-      "iPhone Xs",
-      "iPhone Xs Max",
-      "iPhone 11 Pro",
-      "iPhone 11 Pro Max",
-    ],
+    devices: "X, Xs, Xs max, 11 pron 11 pro max",
     radius: 39.0,
   },
   {
-    devices: ["iPhone Xr", "iPhone 11"],
+    devices: "Xr, 11",
     radius: 41.5,
   },
   {
-    devices: ["iPhone 12 mini", "iPhone 13 mini"],
-    radius: 44.0,
+    devices: "12 mini, 13 mini",
+    radius: 45.0,
   },
   {
-    devices: [
-      "iPhone 12",
-      "iPhone 12 Pro",
-      "iPhone 13 Pro",
-      "iPhone 14",
-    ],
+    devices: "12, 12 pro, 13, 13 pro, 14",
     radius: 47.33,
   },
   {
-    devices: [
-      "iPhone 12 Pro Max",
-      "iPhone 13 Pro Max",
-      "iPhone 14 Plus",
-    ],
+    devices: "12 pro max, 13 pro max, 14 plus",
     radius: 53.33,
   },
   {
-    devices: [
-      "iPhone 14 Pro",
-      "iPhone 14 Pro Max",
-      "iPhone 15",
-      "iPhone 15 Plus",
-      "iPhone 15 Pro",
-      "iPhone 15 Pro Max",
-      "iPhone 16",
-      "iPhone 16 Plus",
-    ],
+    devices: "14 pro, 14 pro max, 15, 15 plus, 15 pro, 15 pro max",
     radius: 55.0,
   },
   {
-    devices: [
-      "iPhone 16 Pro",
-      "iPhone 16 Pro Max",
-    ],
+    devices: "16, 16 pro, 16 pro max, 16 plus",
+    radius: 59.0,
+  },
+  {
+    devices: "iPhone17,3, iPhone17,4", // iphone 16 & 16 plus
+    radius: 55.0,
+  },
+  {
+    devices: "iPhone17,1, iPhone17,2", // iphone 16 pro & 16 pro max
     radius: 62.0,
   },
   {
-    devices: [
-      "iPad Air",
-      "iPad Pro 11-inch",
-      "iPad Pro 12.9-inch",
-    ],
-    radius: 18.0,
+    devices: "pixel 3",
+    radius: 20.0,
   },
   {
-    devices: [
-      "pixel 3",
-    ],
-    radius: 20.0,
-  }
+    devices: "ipad (10th generation)",
+    radius: 22.0,
+  },
 ];
 
 const getCorners = (): number => {
   let modelName = Device.modelName;
-  console.log("model name", modelName);
 
   if (!modelName || modelName.toLowerCase().includes("simulator")) {
     modelName = Device.deviceName?.toLowerCase() || null;
@@ -84,36 +58,16 @@ const getCorners = (): number => {
 
   if (!modelName) return defaultRadius;
 
+  // make device name lowercase
   let device = modelName.toLowerCase();
 
-  // Handle new iPhone models (e.g., iPhone17,1)
-  const iphoneMatch = device.match(/iphone(\d+),\d+/);
-  if (iphoneMatch) {
-    const version = parseInt(iphoneMatch[1], 10);
+  // if device starts with "iphone" remove it
+  device = device.replace("iphone", "");
+  device = device.trim();
 
-    if (version >= 10 && version <= 11) {
-      return 39.0; // iPhone X, Xs, Xs Max, 11 Pro, 11 Pro Max
-    } else if (version === 12) {
-      return 41.5; // iPhone Xr, 11
-    } else if (version === 13) {
-      return 44.0; // iPhone 12 mini, 13 mini
-    } else if (version === 14 || version === 15) {
-      return 47.33; // iPhone 12, 12 Pro, 13 Pro, 14
-    } else if (version === 16) {
-      return 53.33; // iPhone 12 Pro Max, 13 Pro Max, 14 Plus
-    } else if (version >= 17 && version <= 18) {
-      return 55.0; // iPhone 14 Pro, 15, 16, etc.
-    } else if (version >= 19) {
-      return 62.0; // iPhone 16 Pro, 16 Pro Max & more
-    }
-  }
-
-  // Handle old-style device names
-  const matchedRadius = radiuses.find((entry) =>
-    entry.devices.some((name) => device.includes(name.toLowerCase()))
-  );
-
-  return matchedRadius ? matchedRadius.radius : defaultRadius;
+  const corner =
+    device.length > 0 && radiuses.find((r) => r.devices.includes(device));
+  return corner ? corner.radius : defaultRadius;
 };
 
 export default getCorners;
