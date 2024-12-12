@@ -83,6 +83,9 @@ const GradesAverageGraph: React.FC<GradesAverageGraphProps> = ({
     let maxAvg = getPronoteAverage(grades, "max");
     let minAvg = getPronoteAverage(grades, "min");
 
+    const finalAvg = getPronoteAverage(grades, "student");
+    console.log("finalAvg", finalAvg);
+
     setGradesHistory(hst);
     setHLength(hst.length);
 
@@ -146,7 +149,7 @@ const GradesAverageGraph: React.FC<GradesAverageGraphProps> = ({
             {((showDetails && !overall) || selectedDate) && (
               <Reanimated.View
                 style={{
-                  height: 5,
+                  height: 10,
                 }}
               />
             )}
