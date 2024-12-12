@@ -82,9 +82,9 @@ export const getSubjectAverage = (
       targetGrade.value === null ||
       targetGrade.value < 0 ||
       grade.coefficient === 0 ||
+      grade.coefficient <= 0 ||
       typeof targetGrade.value !== "number"
-    )
-      continue;
+    ) continue;
 
     const coefficient = grade.coefficient; // Coefficient de la note
     const outOfValue = grade.outOf.value!; // Valeur maximale possible pour la note
@@ -96,9 +96,7 @@ export const getSubjectAverage = (
       // get average with this grade
       const avgWith = getSubjectAverage(subject, target, useMath, true);
 
-      if(avgWithout > avgWith) {
-        continue;
-      }
+      if(avgWithout > avgWith) continue;
     }
 
     // Si la note est un bonus
