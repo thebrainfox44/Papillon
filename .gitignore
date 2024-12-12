@@ -42,4 +42,4 @@ dist/
 web-build/
 android/app/release/
 
-android/*
+android/
