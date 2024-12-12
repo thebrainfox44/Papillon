@@ -10,7 +10,7 @@ import {
 } from "@/utils/grades/getAverages";
 import { useTheme } from "@react-navigation/native";
 import React, { useRef, useCallback, useEffect, useState } from "react";
-import { View, StyleSheet, Platform, Alert } from "react-native";
+import { View, StyleSheet, Platform, Alert, TouchableOpacity, Linking } from "react-native";
 
 import Reanimated, {
   FadeIn,
@@ -155,31 +155,40 @@ const GradesAverageGraph: React.FC<GradesAverageGraphProps> = ({
             )}
 
             {((showDetails && !overall) || selectedDate) && (
-              <Reanimated.View
+              <TouchableOpacity
+                onPress={() => {
+                  Linking.openURL("https://docs.papillon.bzh/kb/averages");
+                }}
                 style={{
                   position: "absolute",
                   top: 10,
                   left: 10,
-                  backgroundColor: theme.colors.primary + "22",
-                  paddingHorizontal: 8,
-                  paddingVertical: 4,
-                  borderRadius: 8,
-                  borderCurve: "continuous",
                   zIndex: 100,
                 }}
-                entering={animPapillon(FadeInLeft)}
-                exiting={animPapillon(FadeOutLeft)}
               >
-                <Reanimated.Text
+                <Reanimated.View
                   style={{
-                    fontSize: 14,
-                    color: theme.colors.primary,
-                    fontFamily: "semibold",
+                    backgroundColor: theme.colors.primary + "22",
+                    paddingHorizontal: 8,
+                    paddingVertical: 4,
+                    borderRadius: 8,
+                    borderCurve: "continuous",
+                    zIndex: 100,
                   }}
+                  entering={animPapillon(FadeInLeft)}
+                  exiting={animPapillon(FadeOutLeft)}
                 >
-                  Estimation
-                </Reanimated.Text>
-              </Reanimated.View>
+                  <Reanimated.Text
+                    style={{
+                      fontSize: 14,
+                      color: theme.colors.primary,
+                      fontFamily: "semibold",
+                    }}
+                  >
+                    Estimation
+                  </Reanimated.Text>
+                </Reanimated.View>
+              </TouchableOpacity>
             )}
 
             {hLength > 1 ? (
