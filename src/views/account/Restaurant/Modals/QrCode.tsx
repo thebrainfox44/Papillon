@@ -56,6 +56,8 @@ const RestaurantQrCode: Screen<"RestaurantQrCode"> = ({ route, navigation }) => 
     });
   }, [navigation]);
 
+  const [oldBrightness, setOldBrightness] = useState<number>(0.5);
+
   useEffect(() => {
     (async () => {
       if (Platform.OS === "android") {
@@ -65,10 +67,14 @@ const RestaurantQrCode: Screen<"RestaurantQrCode"> = ({ route, navigation }) => 
           return;
         }
       }
-      try { await Brightness.setBrightnessAsync(1); } catch (e) { console.warn("Brightness error:", e); }
+      try {
+        const brightness = await Brightness.getBrightnessAsync();
+        setOldBrightness(brightness);
+        await Brightness.setBrightnessAsync(1);
+      } catch (e) { console.warn("Brightness error:", e); }
     })();
-    return () => { Brightness.setBrightnessAsync(0.5); };
-  }, [navigation]);
+    return () => { Brightness.setBrightnessAsync(oldBrightness); };
+  }, [navigation, oldBrightness]);
 
 
   useEffect(() => {

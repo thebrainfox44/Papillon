@@ -5,7 +5,8 @@ import {
   StyleSheet,
   Switch,
   Alert,
-  ActivityIndicator
+  ActivityIndicator,
+  RefreshControl
 } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import {
@@ -51,6 +52,9 @@ const Menu: Screen<"Menu"> = ({ route, navigation }) => {
   const account = useCurrentAccount((store) => store.account);
   const linkedAccounts = useCurrentAccount((store) => store.linkedAccounts);
 
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [refreshCount, setRefreshCount] = useState(0);
+
   const [allBalances, setAllBalances] = useState<Balance[] | null>(null);
   const [allHistories, setAllHistories] = useState<ReservationHistory[] | null>(null);
   const [allQRCodes, setAllQRCodes] = useState<string[] | null>(null);
@@ -62,6 +66,11 @@ const Menu: Screen<"Menu"> = ({ route, navigation }) => {
   const [isMenuLoading, setMenuLoading] = useState(false);
   const [isInitialised, setIsInitialised] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(0);
+
+  const refreshData = async () => {
+    setIsRefreshing(true);
+    setRefreshCount(refreshCount + 1);
+  };
 
   const getWeekNumber = (date: Date) => {
     const firstDayOfYear = new Date(date.getFullYear(), 0, 1);
@@ -174,11 +183,12 @@ const Menu: Screen<"Menu"> = ({ route, navigation }) => {
         setAllBookings(newBookings);
         setCurrentMenu(dailyMenu);
         setIsInitialised(true);
+        setIsRefreshing(false);
       } catch (error) {
         console.warn("An error occurred while fetching data:", error);
       }
     })();
-  }, [linkedAccounts]);
+  }, [linkedAccounts, refreshCount]);
 
   const fetchQRCode = async () => {
     if (linkedAccounts) {
@@ -194,7 +204,17 @@ const Menu: Screen<"Menu"> = ({ route, navigation }) => {
   }, []);
 
   return (
-    <ScrollView contentContainerStyle={styles.scrollViewContent}>
+    <ScrollView
+      contentContainerStyle={styles.scrollViewContent}
+      refreshControl={
+        <RefreshControl
+          refreshing={isRefreshing}
+          onRefresh={() => {
+            refreshData();
+          }}
+        />
+      }
+    >
       {!isInitialised ? (
         <ActivityIndicator size="large" style={{ padding: 50 }} />
       ) : (
