@@ -40,7 +40,11 @@ const HomeworksDocument: Screen<"HomeworksDocument"> = ({ route }) => {
       fontFamily: "medium",
       fontSize: 16,
       lineHeight: 22,
-    }
+    },
+    a: {
+      color: theme.colors.primary,
+      textDecorationLine: "underline",
+    },
   });
 
   const homework: Homework = route.params.homework || {};
@@ -169,7 +173,11 @@ const HomeworksDocument: Screen<"HomeworksDocument"> = ({ route }) => {
           )}
 
           <NativeItem>
-            <HTMLView value={`<body>${homework.content}</body>`} stylesheet={stylesText} />
+            <HTMLView
+              value={`<body>${homework.content}</body>`}
+              stylesheet={stylesText}
+              onLinkPress={(url) => openUrl(url)}
+            />
           </NativeItem>
         </NativeList>
 
