@@ -192,7 +192,7 @@ const HomeworkItem = ({ homework, navigation, onDonePressHandler, index, total }
               stylesheet={stylesText}
             />
             {route.name === "HomeScreen" && (
-              <View style={{ flex: 1, flexDirection: "row", gap: 4, paddingVertical: 4, alignItems: "center", alignSelf: "flex-start" }}>
+              <View style={{ flex: 1, flexDirection: "row", gap: 4, paddingBottom: 4, paddingTop: 8, alignItems: "center", alignSelf: "flex-start" }}>
                 <Clock
                   size={18}
                   strokeWidth={2.5}
