@@ -306,6 +306,8 @@ const Menu: Screen<"Menu"> = ({ route, navigation }) => {
             </>
           )}
 
+          <View style={{ height: 16 }} />
+
           {isMenuLoading ? (
             <ActivityIndicator size="large" style={{ padding: 50 }} />
           ) : currentMenu?.lunch ? (
