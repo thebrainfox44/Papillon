@@ -82,7 +82,7 @@ const Menu: Screen<"Menu"> = ({ route, navigation }) => {
       setAllBookings(allBookings);
     }
 
-    const dailyMenu = account ? await getMenu(account, date) : null;
+    const dailyMenu = account ? await getMenu(account, date).catch(() => null) : null;
     setCurrentMenu(dailyMenu);
     setMenuLoading(false);
   };
@@ -133,7 +133,7 @@ const Menu: Screen<"Menu"> = ({ route, navigation }) => {
         const newQRCodes: string[] = [];
         const newBookings: BookingTerminal[] = [];
 
-        const dailyMenu = account ? await getMenu(account, pickerDate) : null;
+        const dailyMenu = account ? await getMenu(account, pickerDate).catch(() => null) : null;
         const accountPromises = linkedAccounts.map(async (account) => {
           try {
             const [balance, history, cardnumber, booking] = await Promise.all([
@@ -161,6 +161,7 @@ const Menu: Screen<"Menu"> = ({ route, navigation }) => {
             if (cardnumber) newQRCodes.push(cardnumber);
 
           } catch (error) {
+            setIsInitialised(true);
             console.warn(`An error occurred with account ${account}:`, error);
           }
         });
