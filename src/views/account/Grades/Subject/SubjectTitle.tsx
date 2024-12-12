@@ -8,6 +8,7 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import {type RouteParameters, Screen} from "@/router/helpers/types";
 import type {NativeStackNavigationProp} from "@react-navigation/native-stack";
 import type {Grade, GradesPerSubject} from "@/services/shared/Grade";
+import { getSubjectAverage } from "@/utils/grades/getAverages";
 
 type SubjectTitleParameters = {
   navigation: NativeStackNavigationProp<RouteParameters, keyof RouteParameters>
@@ -22,6 +23,12 @@ type SubjectTitleParameters = {
 
 const SubjectTitle = ({ navigation, subject, subjectData, allGrades }: SubjectTitleParameters) => {
   const theme = useTheme();
+
+  const [calculatedAverage, setCalculatedAverage] = React.useState<number | null>(null);
+
+  React.useEffect(() => {
+    setCalculatedAverage(getSubjectAverage(subject.grades, "student", false).toFixed(2));
+  }, [allGrades, subject]);
 
   return (
     <TouchableOpacity
@@ -81,6 +88,37 @@ const SubjectTitle = ({ navigation, subject, subjectData, allGrades }: SubjectTi
             {getCourseSpeciality(subject.average.subjectName)}
           </NativeText>
         )}
+      </View>
+
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "flex-end",
+          gap: 2,
+          backgroundColor: "yellow",
+          padding: 6,
+          margin: -6,
+          borderRadius: 6,
+        }}
+      >
+        <AnimatedNumber
+          value={calculatedAverage ? calculatedAverage : "N. not"}
+          style={{
+            fontSize: 18,
+            lineHeight: 20,
+            fontFamily: "semibold",
+          }}
+          contentContainerStyle={null}
+        />
+        <NativeText
+          style={{
+            fontSize: 15,
+            lineHeight: 15,
+            opacity: 0.6,
+          }}
+        >
+          /{subject.average.outOf?.value}
+        </NativeText>
       </View>
 
       <View
