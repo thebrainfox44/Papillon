@@ -90,7 +90,7 @@ const Home: Screen<"HomeScreen"> = ({ navigation }) => {
   const windowHeight = Dimensions.get("window").height;
   const tabbarHeight = useBottomTabBarHeight();
 
-  const widgetAnimatedStyle = useAnimatedStyle(() => ({
+  const widgetAnimatedStyle = useAnimatedStyle(() => ({style: {
     paddingTop: insets.top,
     opacity: interpolate(
       scrollOffset.value,
@@ -107,9 +107,9 @@ const Home: Screen<"HomeScreen"> = ({ navigation }) => {
         Extrapolation.CLAMP
       )},
     ]
-  }));
+  }}));
 
-  const modalAnimatedStyle = useAnimatedStyle(() => ({
+  const modalAnimatedStyle = useAnimatedStyle(() => ({style: {
     borderCurve: "continuous",
     borderTopLeftRadius: interpolate(
       scrollOffset.value,
@@ -150,9 +150,9 @@ const Home: Screen<"HomeScreen"> = ({ navigation }) => {
         Extrapolation.CLAMP
       )}
     ],
-  }));
+  }}));
 
-  const navigationBarAnimatedStyle = useAnimatedStyle(() => ({
+  const navigationBarAnimatedStyle = useAnimatedStyle(() => ({style: {
     position: "absolute",
     top: scrollOffset.value - 270 - insets.top,
     left: 0,
@@ -167,9 +167,9 @@ const Home: Screen<"HomeScreen"> = ({ navigation }) => {
     backgroundColor: colors.background,
     borderColor: colors.border,
     borderBottomWidth: 0.5,
-  }));
+  }}));
 
-  const modalContentAnimatedStyle = useAnimatedStyle(() => ({
+  const modalContentAnimatedStyle = useAnimatedStyle(() => ({style: {
     paddingHorizontal: 16,
     paddingBottom: 16 + insets.top + 56,
     transform: [
@@ -182,9 +182,9 @@ const Home: Screen<"HomeScreen"> = ({ navigation }) => {
         )
       }
     ]
-  }));
+  }}));
 
-  const modalIndicatorAnimatedStyle = useAnimatedStyle(() => ({
+  const modalIndicatorAnimatedStyle = useAnimatedStyle(() => ({style: {
     position: "absolute",
     top: 10,
     left: "50%",
@@ -212,12 +212,12 @@ const Home: Screen<"HomeScreen"> = ({ navigation }) => {
       [1, 0.5, 0],
       Extrapolation.CLAMP
     ),
-  }));
+  }}));
 
-  const scrollViewAnimatedStyle = useAnimatedStyle(() => ({
+  const scrollViewAnimatedStyle = useAnimatedStyle(() => ({style: {
     flex: 1,
     backgroundColor: scrollOffset.value > 265 + insets.top ? colors.card : colors.primary,
-  }));
+  }}));
 
   return (
     <View style={{flex: 1}}>
