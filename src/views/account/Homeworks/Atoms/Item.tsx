@@ -15,6 +15,8 @@ import { Homework, HomeworkReturnType } from "@/services/shared/Homework";
 import detectCategory from "@/utils/magic/categorizeHomeworks";
 import { LinearGradient } from "expo-linear-gradient";
 import { useCurrentAccount } from "@/stores/account";
+import LinkFavicon, { getURLDomain } from "@/components/Global/LinkFavicon";
+import { AutoFileIcon } from "@/components/Global/FileIcon";
 
 interface HomeworkItemProps {
   key: number | string
@@ -221,16 +223,28 @@ const HomeworkItem = ({ homework, navigation, onDonePressHandler, index, total }
                 marginRight: 16,
               }}
             >
-              <Paperclip
-                size={18}
-                strokeWidth={2.5}
-                opacity={0.6}
-                color={theme.colors.text}
-              />
+              {(homework.attachments.length > 1) ?
+                <Paperclip
+                  size={20}
+                  strokeWidth={2.5}
+                  color={theme.colors.text+"80"}
+                />
+                :
+                (homework.attachments[0].type == "file") ?
+                  <AutoFileIcon
+                    size={20}
+                    strokeWidth={2.5}
+                    color={theme.colors.text}
+                    opacity={0.7}
+                    filename={homework.attachments[0].name}
+                  />
+                  :
+                  <LinkFavicon size={20} url={homework.attachments[0].url} />
+              }
               <NativeText variant="subtitle" numberOfLines={1}>
                 {homework.attachments.length > 1 ?
                   `${homework.attachments.length} pièces jointes` :
-                  homework.attachments[0].name
+                  homework.attachments[0].name || getURLDomain(homework.attachments[0].url, true)
                 }
               </NativeText>
             </Reanimated.View>
