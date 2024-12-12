@@ -89,7 +89,6 @@ const Grades: Screen<"Grades"> = ({ route, navigation }) => {
     void (async () => {
       setIsLoading(true);
       await updateData();
-      console.log(JSON.stringify(grades));
 
       if(isRefreshing) {
         navigation.navigate("BackgroundIUTLannion");
